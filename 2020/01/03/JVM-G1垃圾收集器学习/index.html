@@ -81,14 +81,14 @@
 
 <meta name="description" content="背景之前的项目因为使用G1垃圾收集器，运行上几天后，发现有时候接口的响应时间出现抖动，导致调用方发生了超时，通过监控发现在超时的时候，系统的YongGC平均时间由原来的几十毫秒居然上涨到了几秒钟。于是趁着这个机会，学习了一下GC，并针对这个问题进行了一下简单的优化 介绍G1是一种并发、并行、部分Stop The World、使用Copying算法收集的分代的增量式收集器。并发指的是在标记阶段，可以">
 <meta property="og:type" content="article">
-<meta property="og:title" content="G1收集器学习">
+<meta property="og:title" content="G1垃圾收集器学习">
 <meta property="og:url" content="http://yoursite.com/2020/01/03/JVM-G1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E5%AD%A6%E4%B9%A0/index.html">
 <meta property="og:site_name" content="v-vampires">
 <meta property="og:description" content="背景之前的项目因为使用G1垃圾收集器，运行上几天后，发现有时候接口的响应时间出现抖动，导致调用方发生了超时，通过监控发现在超时的时候，系统的YongGC平均时间由原来的几十毫秒居然上涨到了几秒钟。于是趁着这个机会，学习了一下GC，并针对这个问题进行了一下简单的优化 介绍G1是一种并发、并行、部分Stop The World、使用Copying算法收集的分代的增量式收集器。并发指的是在标记阶段，可以">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://yoursite.com/images/pasted-1.png">
 <meta property="article:published_time" content="2020-01-03T05:28:00.000Z">
-<meta property="article:modified_time" content="2020-01-04T09:59:09.451Z">
+<meta property="article:modified_time" content="2020-01-04T11:37:10.312Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/images/pasted-1.png">
@@ -127,7 +127,7 @@
 
 
 
-  <title>G1收集器学习 | v-vampires</title>
+  <title>G1垃圾收集器学习 | v-vampires</title>
   
 
 
@@ -281,7 +281,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">G1收集器学习</h1>
+          <h1 class="post-title" itemprop="name headline">G1垃圾收集器学习</h1>
         
 
         <div class="post-meta">
