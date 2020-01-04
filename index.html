@@ -290,7 +290,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-04T16:28:49+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-04T16:28:00+08:00">
                 2020-01-04
               </time>
             
@@ -340,7 +340,7 @@
 <ol>
 <li>cpu缓存导致的可见性问题<br>在单核时候，只有一个cpu以及一个cpu缓存，不同的线程对应的是同一个缓存，则不存在可见性问题。在多核时代，每颗cpu都有自己的缓存，不同的线程可能操作的是不同的缓存。例如线程 A操作的是cpu1的缓存，而线程B则操作的是cpu2的缓存，很明显这个时候线程A对变量v的操作，对于线程B而言则是不可见的</li>
 </ol>
-<p><img src="%5Cimages%5Cpasted-2.png" alt="upload successful"></p>
+<p><img src="/images/pasted-2.png" alt="upload successful"></p>
 <ol start="2">
 <li><p>编译优化带来的有序性问题<br>编译器为了优化性能，有时候会改变语句的先后顺序，这样不但可以更加合理的利用cpu缓存，同时可以减少cpu不必要的停顿。然后编译器的优化只能保证串行语义的一致，无法保证多线程的语义也一致。在java中一个经典案例就是利用双锁检查创建单例对象。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">  static Singleton instance;</span><br><span class="line">  static Singleton getInstance()&#123;</span><br><span class="line">    if (instance &#x3D;&#x3D; null) &#123;</span><br><span class="line">      synchronized(Singleton.class) &#123;</span><br><span class="line">        if (instance &#x3D;&#x3D; null)</span><br><span class="line">          instance &#x3D; new Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return instance;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -353,7 +353,7 @@
 <p>我们假设A线程执行getInstance方法，执行完指令2后，B线程开始执行，这时B发现第一个 instance==null 为false，直接返回了instance实例，然而此时instance实例还没有初始化完成，这个时候B线程访问instance的成员变量就可能触发空指针异常</p>
 </li>
 </ol>
-<p><img src="%5Cimages%5Cpasted-3.png" alt="upload successful"><br>3. 线程切换带来的原子性问题<br>线程的切换是由操作系统来处理的，而操作系统走切换是能够发生在任何一条cpu执行完成的。而很多高级语言的一条语句对应cpu指令，count++这个操作则需要三条指令<br>    1. 指令1：将count从内存load到cpu寄存器中<br>    2. 指令2：将寄存器中的count进行+1<br>    3. 指令3：将count写入内存</p>
+<p><img src="/images/pasted-3.png" alt="upload successful"><br>3. 线程切换带来的原子性问题<br>线程的切换是由操作系统来处理的，而操作系统走切换是能够发生在任何一条cpu执行完成的。而很多高级语言的一条语句对应cpu指令，count++这个操作则需要三条指令<br>    1. 指令1：将count从内存load到cpu寄存器中<br>    2. 指令2：将寄存器中的count进行+1<br>    3. 指令3：将count写入内存</p>
 <p> 当线程A执行完指令1后，切换到线程B则发生原子性问题</p>
 <p><img src="%5Cimages%5Cpasted-4.png" alt="upload successful"></p>
 
@@ -529,138 +529,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/03/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="v-vampires">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="v-vampires">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/01/03/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-03T10:43:47+08:00">
-                2020-01-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -707,7 +575,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

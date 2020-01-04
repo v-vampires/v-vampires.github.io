@@ -86,14 +86,14 @@
 <meta property="og:site_name" content="v-vampires">
 <meta property="og:description" content="介绍一直以来，由于cpu、内存、I&#x2F;O存在着巨大的速度差异，cpu&gt;内存&gt;I&#x2F;O。为了平衡这三者的差异，计算机结构、操作系统、编译器都做出了巨大的贡献，主要体现为：  增加cpu缓存，以均衡与内存的速度差异 编译器优化指令执行次序，使得缓存能够更加合理利用 操作系统增加进程、线程，以分时复用cpu，进而均衡cpu与I&#x2F;O的速度差异  以上的优化确实提高了cpu的使用率，提升了整体程序的">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://yoursite.com/2020/01/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%8F%AF%E8%A7%81%E6%80%A7%E3%80%81%E9%A1%BA%E5%BA%8F%E6%80%A7%E3%80%81%E5%8E%9F%E5%AD%90%E6%80%A7/%5Cimages%5Cpasted-2.png">
-<meta property="og:image" content="http://yoursite.com/2020/01/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%8F%AF%E8%A7%81%E6%80%A7%E3%80%81%E9%A1%BA%E5%BA%8F%E6%80%A7%E3%80%81%E5%8E%9F%E5%AD%90%E6%80%A7/%5Cimages%5Cpasted-3.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-2.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-3.png">
 <meta property="og:image" content="http://yoursite.com/2020/01/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%8F%AF%E8%A7%81%E6%80%A7%E3%80%81%E9%A1%BA%E5%BA%8F%E6%80%A7%E3%80%81%E5%8E%9F%E5%AD%90%E6%80%A7/%5Cimages%5Cpasted-4.png">
-<meta property="article:published_time" content="2020-01-04T08:28:49.000Z">
-<meta property="article:modified_time" content="2020-01-04T09:02:24.822Z">
+<meta property="article:published_time" content="2020-01-04T08:28:00.000Z">
+<meta property="article:modified_time" content="2020-01-04T09:54:04.549Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/2020/01/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%8F%AF%E8%A7%81%E6%80%A7%E3%80%81%E9%A1%BA%E5%BA%8F%E6%80%A7%E3%80%81%E5%8E%9F%E5%AD%90%E6%80%A7/%5Cimages%5Cpasted-2.png">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-2.png">
 
 
 
@@ -295,7 +295,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-04T16:28:49+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-04T16:28:00+08:00">
                 2020-01-04
               </time>
             
@@ -348,7 +348,7 @@
 <ol>
 <li>cpu缓存导致的可见性问题<br>在单核时候，只有一个cpu以及一个cpu缓存，不同的线程对应的是同一个缓存，则不存在可见性问题。在多核时代，每颗cpu都有自己的缓存，不同的线程可能操作的是不同的缓存。例如线程 A操作的是cpu1的缓存，而线程B则操作的是cpu2的缓存，很明显这个时候线程A对变量v的操作，对于线程B而言则是不可见的</li>
 </ol>
-<p><img src="%5Cimages%5Cpasted-2.png" alt="upload successful"></p>
+<p><img src="/images/pasted-2.png" alt="upload successful"></p>
 <ol start="2">
 <li><p>编译优化带来的有序性问题<br>编译器为了优化性能，有时候会改变语句的先后顺序，这样不但可以更加合理的利用cpu缓存，同时可以减少cpu不必要的停顿。然后编译器的优化只能保证串行语义的一致，无法保证多线程的语义也一致。在java中一个经典案例就是利用双锁检查创建单例对象。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">  static Singleton instance;</span><br><span class="line">  static Singleton getInstance()&#123;</span><br><span class="line">    if (instance &#x3D;&#x3D; null) &#123;</span><br><span class="line">      synchronized(Singleton.class) &#123;</span><br><span class="line">        if (instance &#x3D;&#x3D; null)</span><br><span class="line">          instance &#x3D; new Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return instance;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -361,7 +361,7 @@
 <p>我们假设A线程执行getInstance方法，执行完指令2后，B线程开始执行，这时B发现第一个 instance==null 为false，直接返回了instance实例，然而此时instance实例还没有初始化完成，这个时候B线程访问instance的成员变量就可能触发空指针异常</p>
 </li>
 </ol>
-<p><img src="%5Cimages%5Cpasted-3.png" alt="upload successful"><br>3. 线程切换带来的原子性问题<br>线程的切换是由操作系统来处理的，而操作系统走切换是能够发生在任何一条cpu执行完成的。而很多高级语言的一条语句对应cpu指令，count++这个操作则需要三条指令<br>    1. 指令1：将count从内存load到cpu寄存器中<br>    2. 指令2：将寄存器中的count进行+1<br>    3. 指令3：将count写入内存</p>
+<p><img src="/images/pasted-3.png" alt="upload successful"><br>3. 线程切换带来的原子性问题<br>线程的切换是由操作系统来处理的，而操作系统走切换是能够发生在任何一条cpu执行完成的。而很多高级语言的一条语句对应cpu指令，count++这个操作则需要三条指令<br>    1. 指令1：将count从内存load到cpu寄存器中<br>    2. 指令2：将寄存器中的count进行+1<br>    3. 指令3：将count写入内存</p>
 <p> 当线程A执行完指令1后，切换到线程B则发生原子性问题</p>
 <p><img src="%5Cimages%5Cpasted-4.png" alt="upload successful"></p>
 
@@ -473,7 +473,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
