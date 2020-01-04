@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="en">
+<html class="theme-next mist use-motion" lang="en">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -93,7 +93,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -330,39 +330,15 @@
       
         
           
-            <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>一直以来，由于cpu、内存、I/O存在着巨大的速度差异，cpu&gt;内存&gt;I/O。为了平衡这三者的差异，计算机结构、操作系统、编译器都做出了巨大的贡献，主要体现为：</p>
-<ol>
-<li>增加cpu缓存，以均衡与内存的速度差异</li>
-<li>编译器优化指令执行次序，使得缓存能够更加合理利用</li>
-<li>操作系统增加进程、线程，以分时复用cpu，进而均衡cpu与I/O的速度差异</li>
-</ol>
-<p>以上的优化确实提高了cpu的使用率，提升了整体程序的性能，但是也给我们的并发程序带来了一些问题</p>
-<ol>
-<li>cpu缓存导致的可见性问题<br>在单核时候，只有一个cpu以及一个cpu缓存，不同的线程对应的是同一个缓存，则不存在可见性问题。在多核时代，每颗cpu都有自己的缓存，不同的线程可能操作的是不同的缓存。例如线程 A操作的是cpu1的缓存，而线程B则操作的是cpu2的缓存，很明显这个时候线程A对变量v的操作，对于线程B而言则是不可见的</li>
-</ol>
-<p><img src="/images/pasted-2.png" alt="upload successful"></p>
-<ol start="2">
-<li><p>编译优化带来的有序性问题<br>编译器为了优化性能，有时候会改变语句的先后顺序，这样不但可以更加合理的利用cpu缓存，同时可以减少cpu不必要的停顿。然后编译器的优化只能保证串行语义的一致，无法保证多线程的语义也一致。在java中一个经典案例就是利用双锁检查创建单例对象。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">  static Singleton instance;</span><br><span class="line">  static Singleton getInstance()&#123;</span><br><span class="line">    if (instance &#x3D;&#x3D; null) &#123;</span><br><span class="line">      synchronized(Singleton.class) &#123;</span><br><span class="line">        if (instance &#x3D;&#x3D; null)</span><br><span class="line">          instance &#x3D; new Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return instance;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>问题出在new操作上，new操作经过优化后，执行指令的顺序为：</p>
-<ol>
-<li>分配一块内存M</li>
-<li>将M的地址赋值给instance变量</li>
-<li>在内存M上初始化instance变量  </li>
-</ol>
-<p>我们假设A线程执行getInstance方法，执行完指令2后，B线程开始执行，这时B发现第一个 instance==null 为false，直接返回了instance实例，然而此时instance实例还没有初始化完成，这个时候B线程访问instance的成员变量就可能触发空指针异常<br><img src="/images/pasted-3.png" alt="upload successful"></p>
-</li>
-<li><p>线程切换带来的原子性问题<br>线程的切换是由操作系统来处理的，而操作系统走切换是能够发生在任何一条cpu执行完成的。而很多高级语言的一条语句对应cpu指令，count++这个操作则需要三条指令</p>
-<ol>
-<li>指令1：将count从内存load到cpu寄存器中</li>
-<li>指令2：将寄存器中的count进行+1</li>
-<li>指令3：将count写入内存</li>
-</ol>
-<p>当线程A执行完指令1后，切换到线程B则发生原子性问题<br><img src="/images/pasted-4.png" alt="upload successful"></p>
-</li>
-</ol>
-
-          
+          介绍一直以来，由于cpu、内存、I/O存在着巨大的速度差异，cpu&gt;内存&gt;I/O。为了平
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/01/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%8F%AF%E8%A7%81%E6%80%A7%E3%80%81%E9%A1%BA%E5%BA%8F%E6%80%A7%E3%80%81%E5%8E%9F%E5%AD%90%E6%80%A7/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -480,27 +456,15 @@
       
         
           
-            <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>之前的项目因为使用G1垃圾收集器，运行上几天后，发现有时候接口的响应时间出现抖动，导致调用方发生了超时，通过监控发现在超时的时候，系统的YongGC平均时间由原来的几十毫秒居然上涨到了几秒钟。于是趁着这个机会，学习了一下GC，并针对这个问题进行了一下简单的优化</p>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>G1是一种并发、并行、部分Stop The World、使用Copying算法收集的分代的增量式收集器。并发指的是在标记阶段，可以和应用程序并发执行，减少对应用的暂停时间。并行则是在清理阶段使用多线程处理。增量收集是指G1将堆划分为很多大小相等的Region，每次收集会判断各个Region的活性（垃圾对象的占比），然后G1按照设置的停顿时间、和前几次回收所用时间来估算要回收哪些Region，所以增量的意思就是回收收益较高的一部分Region，并不是全部Region</p>
-<h2 id="优势"><a href="#优势" class="headerlink" title="优势"></a>优势</h2><ol>
-<li>可预测的停顿时间</li>
-<li>不会存在内存碎片</li>
-</ol>
-<h2 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h2><h2 id="收集分类"><a href="#收集分类" class="headerlink" title="收集分类"></a>收集分类</h2><h3 id="Young-GC"><a href="#Young-GC" class="headerlink" title="Young GC"></a>Young GC</h3><p>当Eden区满了，就会进行Young GC，Young GC会将Eden和Survivor区对应的Regin（称为Collection Set, CSet）中的活对象copy到新的Region（即Survivor）中，当对象的年龄达到阈值后，会copy到old Region中，由于是采用的copy算法，就避免了内存碎片问题，不在需要单独压缩</p>
-<h3 id="Mixed-GC"><a href="#Mixed-GC" class="headerlink" title="Mixed GC"></a>Mixed GC</h3><p>当整个堆的使用率超过InitiatingHeapOccupancyPercent置顶值之后，就会开始ConcurentMarking, 完成了Concurrent Marking后，G1会从Young GC切换到Mixed GC, 在Mixed GC中，G1可以增加若干个Old区域的Region到CSet中</p>
-<h3 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h3><p>由于G1的一些收集过程是和应用程序并发执行的，所以可能还没有回收完，新申请的内存空间占满了所有空间，就会触发Full GC。（正常情况，不应该有Full GC）</p>
-<h2 id="常见的调节参数"><a href="#常见的调节参数" class="headerlink" title="常见的调节参数"></a>常见的调节参数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Xms12g -Xmx12g</span><br></pre></td></tr></table></figure>
-<p>设置堆大小</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:MaxGCPauseMillis&#x3D;200</span><br></pre></td></tr></table></figure>
-<p>设置GC最大停顿时间</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:G1HeapRegionSize&#x3D;8m</span><br></pre></td></tr></table></figure>
-<p>设置Region大小</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:InitiatingHeapOccupancyPercent</span><br><span class="line">&#x3D;30</span><br></pre></td></tr></table></figure>
-<p>开始一个标记周期的堆占用比例阈值，默认45%，注意这里是整个堆,当达到比例之后开始Mixed GC</p>
-<p>而这次线上问题的调优正式根据gc日志发现YongGC的时间主要花费在Scan Rset上（如下图），考虑到可能是因为Region块太小导致Region的数量过多，而region的数量过多则会增加过多的跨区域引用，导致扫描的时间长，因此将-XX:G1HeapRegionSize由原来的2m调整到8m；-XX:InitiatingHeapOccupancyPercent<br>=30则由原来的45%调整到30%，即相当于增加了MixedGC的频率。运行了一段时间之后发现整体系统的GC时间比较稳定，接口也没有再继续出现抖动</p>
-<p><img src="/images/pasted-1.png" alt="upload successful"></p>
-<h2 id="日志分析"><a href="#日志分析" class="headerlink" title="日志分析"></a>日志分析</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">2019-12-20T16:41:01.932+0800: 3.614: [GC concurrent-string-deduplication, 35.2K-&gt;1184.0B(34.1K), avg 96.7%, 0.0001139 secs]</span><br><span class="line">&#x2F;&#x2F;GC前打印heap使用信息</span><br><span class="line">&#123;Heap before GC invocations&#x3D;2 (full 0):</span><br><span class="line"> garbage-first heap   total 11534336K, used 580940K [0x0000000500000000, 0x0000000500802c00, 0x00000007c0000000)</span><br><span class="line">  region size 8192K, 70 young (573440K), 9 survivors (73728K)</span><br><span class="line"> Metaspace       used 14708K, capacity 14988K, committed 15360K, reserved 1062912K</span><br><span class="line">  class space    used 1625K, capacity 1691K, committed 1792K, reserved 1048576K</span><br><span class="line">2019-12-20T16:41:03.046+0800: 4.729: [GC pause (G1 Evacuation Pause) (young)</span><br><span class="line">Desired survivor size 37748736 bytes, new threshold 15 (max 15)</span><br><span class="line">- age   1:    6261936 bytes,    6261936 total</span><br><span class="line">- age   2:   16888272 bytes,   23150208 total</span><br><span class="line">&#x2F;&#x2F;GC选择要收集的Region</span><br><span class="line"> 4.729: [G1Ergonomics (CSet Construction) start choosing CSet, _pending_cards: 1024, predicted base time: 35.60 ms, remaining time: 164.40 ms, target pause time: 200.00 ms]</span><br><span class="line"> 4.729: [G1Ergonomics (CSet Construction) add young regions to CSet, eden: 61 regions, survivors: 9 regions, predicted young region time: 223.97 ms]</span><br><span class="line"> 4.729: [G1Ergonomics (CSet Construction) finish choosing CSet, eden: 61 regions, survivors: 9 regions, old: 0 regions, predicted pause time: 259.58 ms, target pause time: 200.00 ms]</span><br><span class="line">, 0.0498341 secs]</span><br><span class="line">   [Parallel Time: 19.1 ms, GC Workers: 8]</span><br><span class="line">      [GC Worker Start (ms): Min: 4729.1, Avg: 4739.0, Max: 4748.1, Diff: 19.0]</span><br><span class="line">      [Ext Root Scanning (ms): Min: 0.0, Avg: 0.3, Max: 1.1, Diff: 1.1, Sum: 2.0]</span><br><span class="line">      [Update RS (ms): Min: 0.0, Avg: 0.1, Max: 0.4, Diff: 0.4, Sum: 0.8]</span><br><span class="line">         [Processed Buffers: Min: 0, Avg: 0.6, Max: 2, Diff: 2, Sum: 5]</span><br><span class="line">      [Scan RS (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.1]</span><br><span class="line">      [Code Root Scanning (ms): Min: 0.0, Avg: 0.3, Max: 1.2, Diff: 1.2, Sum: 2.4]</span><br><span class="line">      [Object Copy (ms): Min: 0.0, Avg: 8.3, Max: 17.4, Diff: 17.4, Sum: 66.5]</span><br><span class="line">      ...</span><br><span class="line">   &#x2F;&#x2F;回收情况</span><br><span class="line">   [Eden: 488.0M(488.0M)-&gt;0.0B(488.0M) Survivors: 72.0M-&gt;72.0M Heap: 567.3M(11.0G)-&gt;97.2M(11.0G)]</span><br><span class="line">&#x2F;&#x2F;GC之后heap使用信息</span><br><span class="line">Heap after GC invocations&#x3D;3 (full 0):</span><br><span class="line"> garbage-first heap   total 11534336K, used 99533K [0x0000000500000000, 0x0000000500802c00, 0x00000007c0000000)</span><br><span class="line">  region size 8192K, 9 young (73728K), 9 survivors (73728K)</span><br><span class="line"> Metaspace       used 14708K, capacity 14988K, committed 15360K, reserved 1062912K</span><br><span class="line">  class space    used 1625K, capacity 1691K, committed 1792K, reserved 1048576K</span><br><span class="line">&#125;</span><br><span class="line"> [Times: user&#x3D;0.10 sys&#x3D;0.01, real&#x3D;0.05 secs]</span><br><span class="line"> ...</span><br><span class="line"> ...</span><br><span class="line"> 54243.724: [G1Ergonomics (CSet Construction) start choosing CSet, _pending_cards: 31754, predicted base time: 39.45 ms, remaining time: 160.55 ms, target pause time: 200.00 ms]</span><br><span class="line"> 54243.724: [G1Ergonomics (CSet Construction) add young regions to CSet, eden: 829 regions, survivors: 8 regions, predicted young region time: 23.89 ms]</span><br><span class="line"> 54243.725: [G1Ergonomics (CSet Construction) finish choosing CSet, eden: 829 regions, survivors: 8 regions, old: 0 regions, predicted pause time: 63.33 ms, target pause time: 200.00 ms]</span><br><span class="line">&#x2F;&#x2F;请求并发标记周期初始化，原因是堆使用占比超过了阈值</span><br><span class="line"> 54243.788: [G1Ergonomics (Concurrent Cycles) request concurrent cycle initiation, reason: occupancy higher than threshold, occupancy: 3548381184 bytes, allocation request: 0 bytes, thres</span><br><span class="line">hold: 3543348000 bytes (30.00 %), source: end of GC]</span><br><span class="line">, 0.0644085 secs]</span><br><span class="line">   [Parallel Time: 52.2 ms, GC Workers: 8]</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">&#x2F;&#x2F;开始并发周期</span><br><span class="line"> 54444.747: [G1Ergonomics (Concurrent Cycles) initiate concurrent cycle, reason: concurrent cycle initiation requested]</span><br><span class="line">&#x2F;&#x2F;Initial Marking Phase</span><br><span class="line">2019-12-21T07:48:23.065+0800: 54444.748: [GC pause (G1 Evacuation Pause) (young) (initial-mark)</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">&#x2F;&#x2F;Root Region Scan Phase</span><br><span class="line"> 2019-12-21T07:48:23.127+0800: 54444.810: [GC concurrent-root-region-scan-start]</span><br><span class="line">2019-12-21T07:48:23.127+0800: 54444.810: [GC concurrent-string-deduplication, 149.5K-&gt;146.6K(3000.0B), avg 19.7%, 0.0003013 secs]</span><br><span class="line">2019-12-21T07:48:23.168+0800: 54444.851: [GC concurrent-root-region-scan-end, 0.0406415 secs]</span><br><span class="line">&#x2F;&#x2F;Concurrent Marking Phase</span><br><span class="line">2019-12-21T07:48:23.168+0800: 54444.851: [GC concurrent-mark-start]</span><br><span class="line">2019-12-21T07:48:24.707+0800: 54446.389: [GC concurrent-mark-end, 1.5387352 secs]</span><br><span class="line">&#x2F;&#x2F;Remark Phase</span><br><span class="line">2019-12-21T07:48:24.709+0800: 54446.392: [GC remark 2019-12-21T07:48:24.709+0800: 54446.392: [Finalize Marking, 0.0007364 secs] 2019-12-21T07:48:24.710+0800: 54446.393: [GC ref-proc, 0.02</span><br><span class="line">&#x2F;&#x2F;Cleanup Phase</span><br><span class="line">61782 secs] 2019-12-21T07:48:24.736+0800: 54446.419: [Unloading, 0.0355887 secs], 0.0668872 secs]</span><br><span class="line"> [Times: user&#x3D;0.29 sys&#x3D;0.01, real&#x3D;0.07 secs]</span><br><span class="line">2019-12-21T07:48:24.779+0800: 54446.462: [GC cleanup 3546M-&gt;3546M(11G), 0.0294983 secs]</span><br><span class="line"> [Times: user&#x3D;0.22 sys&#x3D;0.00, real&#x3D;0.03 secs]</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"> 54663.058: [G1Ergonomics (CSet Construction) start choosing CSet, _pending_cards: 25667, predicted base time: 37.62 ms, remaining time: 162.38 ms, target pause time: 200.00 ms]</span><br><span class="line"> 54663.058: [G1Ergonomics (CSet Construction) add young regions to CSet, eden: 828 regions, survivors: 8 regions, predicted young region time: 22.57 ms]</span><br><span class="line"> 54663.058: [G1Ergonomics (CSet Construction) finish choosing CSet, eden: 828 regions, survivors: 8 regions, old: 0 regions, predicted pause time: 60.19 ms, target pause time: 200.00 ms]</span><br><span class="line"> 54663.107: [G1Ergonomics (Concurrent Cycles) do not request concurrent cycle initiation, reason: still doing mixed collections, occupancy: 3556769792 bytes, allocation request: 0 bytes,</span><br><span class="line">threshold: 3543348000 bytes (30.00 %), source: end of GC]</span><br><span class="line"> 54663.107: [G1Ergonomics (Mixed GCs) start mixed GCs, reason: candidate old regions available, candidate old regions: 357 regions, reclaimable: 1319713712 bytes (11.17 %), threshold: 5.0</span><br><span class="line">0 %]</span><br><span class="line">, 0.0493032 secs]</span><br><span class="line">   [Parallel Time: 38.2 ms, GC Workers: 8]</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"> 54722.968: [G1Ergonomics (CSet Construction) start choosing CSet, _pending_cards: 32090, predicted base time: 34.60 ms, remaining time: 165.40 ms, target pause time: 200.00 ms]</span><br><span class="line"> 54722.968: [G1Ergonomics (CSet Construction) add young regions to CSet, eden: 62 regions, survivors: 8 regions, predicted young region time: 13.33 ms]</span><br><span class="line"> 54722.970: [G1Ergonomics (CSet Construction) finish adding old regions to CSet, reason: reclaimable percentage not over threshold, old: 39 regions, max: 141 regions, reclaimable: 5884430</span><br><span class="line">56 bytes (4.98 %), threshold: 5.00 %]</span><br><span class="line"> 54722.970: [G1Ergonomics (CSet Construction) added expensive regions to CSet, reason: old CSet region num not reached min, old: 39 regions, expensive: 8 regions, min: 45 regions, remaini</span><br><span class="line">ng time: 0.00 ms]</span><br><span class="line"> 54722.970: [G1Ergonomics (CSet Construction) finish choosing CSet, eden: 62 regions, survivors: 8 regions, old: 39 regions, predicted pause time: 242.63 ms, target pause time: 200.00 ms]</span><br><span class="line">&#x2F;&#x2F;不再进行MixedGC收集，切换到YongGC收集</span><br><span class="line"> 54723.088: [G1Ergonomics (Mixed GCs) do not continue mixed GCs, reason: reclaimable percentage not over threshold, candidate old regions: 181 regions, reclaimable: 588443056 bytes (4.98</span><br><span class="line">%), threshold: 5.00 %]</span><br><span class="line">, 0.1202978 secs]</span><br><span class="line">   [Parallel Time: 108.3 ms, GC Workers: 8]</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line"> 54937.113: [G1Ergonomics (CSet Construction) start choosing CSet, _pending_cards: 39863, predicted base time: 36.57 ms, remaining time: 163.43 ms, target pause time: 200.00 ms]</span><br><span class="line"> 54937.113: [G1Ergonomics (CSet Construction) add young regions to CSet, eden: 836 regions, survivors: 8 regions, predicted young region time: 18.81 ms]</span><br><span class="line"> 54937.113: [G1Ergonomics (CSet Construction) finish choosing CSet, eden: 836 regions, survivors: 8 regions, old: 0 regions, predicted pause time: 55.39 ms, target pause time: 200.00 ms]</span><br><span class="line">, 0.0532435 secs]</span><br><span class="line">   [Parallel Time: 40.9 ms, GC Workers: 8]</span><br></pre></td></tr></table></figure>
-          
+          背景之前的项目因为使用G1垃圾收集器，运行上几天后，发现有时候接口的响应时间出现抖动，导致调用方发生
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/01/03/JVM-G1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E5%AD%A6%E4%B9%A0/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -639,7 +603,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
 
 
 
