@@ -88,9 +88,9 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://yoursite.com/images/pasted-2.png">
 <meta property="og:image" content="http://yoursite.com/images/pasted-3.png">
-<meta property="og:image" content="http://yoursite.com/2020/01/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%8F%AF%E8%A7%81%E6%80%A7%E3%80%81%E9%A1%BA%E5%BA%8F%E6%80%A7%E3%80%81%E5%8E%9F%E5%AD%90%E6%80%A7/%5Cimages%5Cpasted-4.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-4.png">
 <meta property="article:published_time" content="2020-01-04T08:28:00.000Z">
-<meta property="article:modified_time" content="2020-01-04T09:54:04.549Z">
+<meta property="article:modified_time" content="2020-01-04T10:00:12.880Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/images/pasted-2.png">
@@ -358,12 +358,17 @@
 <li>将M的地址赋值给instance变量</li>
 <li>在内存M上初始化instance变量  </li>
 </ol>
-<p>我们假设A线程执行getInstance方法，执行完指令2后，B线程开始执行，这时B发现第一个 instance==null 为false，直接返回了instance实例，然而此时instance实例还没有初始化完成，这个时候B线程访问instance的成员变量就可能触发空指针异常</p>
+<p>我们假设A线程执行getInstance方法，执行完指令2后，B线程开始执行，这时B发现第一个 instance==null 为false，直接返回了instance实例，然而此时instance实例还没有初始化完成，这个时候B线程访问instance的成员变量就可能触发空指针异常<br><img src="/images/pasted-3.png" alt="upload successful"></p>
+</li>
+<li><p>线程切换带来的原子性问题<br>线程的切换是由操作系统来处理的，而操作系统走切换是能够发生在任何一条cpu执行完成的。而很多高级语言的一条语句对应cpu指令，count++这个操作则需要三条指令</p>
+<ol>
+<li>指令1：将count从内存load到cpu寄存器中</li>
+<li>指令2：将寄存器中的count进行+1</li>
+<li>指令3：将count写入内存</li>
+</ol>
+<p>当线程A执行完指令1后，切换到线程B则发生原子性问题<br><img src="/images/pasted-4.png" alt="upload successful"></p>
 </li>
 </ol>
-<p><img src="/images/pasted-3.png" alt="upload successful"><br>3. 线程切换带来的原子性问题<br>线程的切换是由操作系统来处理的，而操作系统走切换是能够发生在任何一条cpu执行完成的。而很多高级语言的一条语句对应cpu指令，count++这个操作则需要三条指令<br>    1. 指令1：将count从内存load到cpu寄存器中<br>    2. 指令2：将寄存器中的count进行+1<br>    3. 指令3：将count写入内存</p>
-<p> 当线程A执行完指令1后，切换到线程B则发生原子性问题</p>
-<p><img src="%5Cimages%5Cpasted-4.png" alt="upload successful"></p>
 
       
     </div>
