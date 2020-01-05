@@ -79,21 +79,17 @@
 
 
 
-<meta name="description" content="介绍一直以来，由于cpu、内存、I&#x2F;O存在着巨大的速度差异，cpu&gt;内存&gt;I&#x2F;O。为了平衡这三者的差异，计算机结构、操作系统、编译器都做出了巨大的贡献，主要体现为：  增加cpu缓存，以均衡与内存的速度差异 编译器优化指令执行次序，使得缓存能够更加合理利用 操作系统增加进程、线程，以分时复用cpu，进而均衡cpu与I&#x2F;O的速度差异  以上的优化确实提高了cpu的使用率，提升了整体程序的">
+<meta name="description" content="背景我们知道导致cpu缓存导致了可见性问题，编译器优化带来了有序性问题。那么如果我们禁用了cpu缓存与编译器优化，就能够解决问题，但是性能就无法提升了。所以一个合理的方案，就是按照一定规范来禁用缓存和编译器优化，即在某些情况下禁用缓存与编译器优化。Java内存模型就是这样的一个规范，用来解决可见性与有序性问题 概念java内存模型本质上就是规范了JVM如何按照规则禁用缓存和编译器优化，既面向应用开">
 <meta property="og:type" content="article">
-<meta property="og:title" content="并发编程-可见性、顺序性、原子性">
-<meta property="og:url" content="http://yoursite.com/2020/01/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%8F%AF%E8%A7%81%E6%80%A7%E3%80%81%E9%A1%BA%E5%BA%8F%E6%80%A7%E3%80%81%E5%8E%9F%E5%AD%90%E6%80%A7/index.html">
+<meta property="og:title" content="并发编程-Java内存模型：解决可见性与有序性问题">
+<meta property="og:url" content="http://yoursite.com/2020/01/05/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%8F%AF%E8%A7%81%E6%80%A7%E4%B8%8E%E6%9C%89%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="v-vampires">
-<meta property="og:description" content="介绍一直以来，由于cpu、内存、I&#x2F;O存在着巨大的速度差异，cpu&gt;内存&gt;I&#x2F;O。为了平衡这三者的差异，计算机结构、操作系统、编译器都做出了巨大的贡献，主要体现为：  增加cpu缓存，以均衡与内存的速度差异 编译器优化指令执行次序，使得缓存能够更加合理利用 操作系统增加进程、线程，以分时复用cpu，进而均衡cpu与I&#x2F;O的速度差异  以上的优化确实提高了cpu的使用率，提升了整体程序的">
+<meta property="og:description" content="背景我们知道导致cpu缓存导致了可见性问题，编译器优化带来了有序性问题。那么如果我们禁用了cpu缓存与编译器优化，就能够解决问题，但是性能就无法提升了。所以一个合理的方案，就是按照一定规范来禁用缓存和编译器优化，即在某些情况下禁用缓存与编译器优化。Java内存模型就是这样的一个规范，用来解决可见性与有序性问题 概念java内存模型本质上就是规范了JVM如何按照规则禁用缓存和编译器优化，既面向应用开">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://yoursite.com/images/pasted-2.png">
-<meta property="og:image" content="http://yoursite.com/images/pasted-3.png">
-<meta property="og:image" content="http://yoursite.com/images/pasted-4.png">
-<meta property="article:published_time" content="2020-01-04T08:28:00.000Z">
-<meta property="article:modified_time" content="2020-01-04T10:00:12.880Z">
+<meta property="article:published_time" content="2020-01-05T05:49:59.000Z">
+<meta property="article:modified_time" content="2020-01-05T05:59:08.776Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/pasted-2.png">
 
 
 
@@ -123,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/01/04/并发编程-可见性、顺序性、原子性/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/01/05/并发编程-Java内存模型：解决可见性与有序性问题/"/>
 
 
 
 
 
-  <title>并发编程-可见性、顺序性、原子性 | v-vampires</title>
+  <title>并发编程-Java内存模型：解决可见性与有序性问题 | v-vampires</title>
   
 
 
@@ -266,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%8F%AF%E8%A7%81%E6%80%A7%E3%80%81%E9%A1%BA%E5%BA%8F%E6%80%A7%E3%80%81%E5%8E%9F%E5%AD%90%E6%80%A7/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/05/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%8F%AF%E8%A7%81%E6%80%A7%E4%B8%8E%E6%9C%89%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="v-vampires">
@@ -283,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">并发编程-可见性、顺序性、原子性</h1>
+          <h1 class="post-title" itemprop="name headline">并发编程-Java内存模型：解决可见性与有序性问题</h1>
         
 
         <div class="post-meta">
@@ -295,8 +291,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-04T16:28:00+08:00">
-                2020-01-04
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-05T13:49:59+08:00">
+                2020-01-05
               </time>
             
 
@@ -338,37 +334,18 @@
       
 
       
-        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>一直以来，由于cpu、内存、I/O存在着巨大的速度差异，cpu&gt;内存&gt;I/O。为了平衡这三者的差异，计算机结构、操作系统、编译器都做出了巨大的贡献，主要体现为：</p>
-<ol>
-<li>增加cpu缓存，以均衡与内存的速度差异</li>
-<li>编译器优化指令执行次序，使得缓存能够更加合理利用</li>
-<li>操作系统增加进程、线程，以分时复用cpu，进而均衡cpu与I/O的速度差异</li>
-</ol>
-<p>以上的优化确实提高了cpu的使用率，提升了整体程序的性能，但是也给我们的并发程序带来了一些问题</p>
-<ol>
-<li>cpu缓存导致的可见性问题<br>在单核时候，只有一个cpu以及一个cpu缓存，不同的线程对应的是同一个缓存，则不存在可见性问题。在多核时代，每颗cpu都有自己的缓存，不同的线程可能操作的是不同的缓存。例如线程 A操作的是cpu1的缓存，而线程B则操作的是cpu2的缓存，很明显这个时候线程A对变量v的操作，对于线程B而言则是不可见的</li>
-</ol>
-<p><img src="/images/pasted-2.png" alt="upload successful"></p>
-<ol start="2">
-<li><p>编译优化带来的有序性问题<br>编译器为了优化性能，有时候会改变语句的先后顺序，这样不但可以更加合理的利用cpu缓存，同时可以减少cpu不必要的停顿。然后编译器的优化只能保证串行语义的一致，无法保证多线程的语义也一致。在java中一个经典案例就是利用双锁检查创建单例对象。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton &#123;</span><br><span class="line">  static Singleton instance;</span><br><span class="line">  static Singleton getInstance()&#123;</span><br><span class="line">    if (instance &#x3D;&#x3D; null) &#123;</span><br><span class="line">      synchronized(Singleton.class) &#123;</span><br><span class="line">        if (instance &#x3D;&#x3D; null)</span><br><span class="line">          instance &#x3D; new Singleton();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return instance;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>问题出在new操作上，new操作经过优化后，执行指令的顺序为：</p>
-<ol>
-<li>分配一块内存M</li>
-<li>将M的地址赋值给instance变量</li>
-<li>在内存M上初始化instance变量  </li>
-</ol>
-<p>我们假设A线程执行getInstance方法，执行完指令2后，B线程开始执行，这时B发现第一个 instance==null 为false，直接返回了instance实例，然而此时instance实例还没有初始化完成，这个时候B线程访问instance的成员变量就可能触发空指针异常<br><img src="/images/pasted-3.png" alt="upload successful"></p>
-</li>
-<li><p>线程切换带来的原子性问题<br>线程的切换是由操作系统来处理的，而操作系统走切换是能够发生在任何一条cpu执行完成的。而很多高级语言的一条语句对应cpu指令，count++这个操作则需要三条指令</p>
-<ol>
-<li>指令1：将count从内存load到cpu寄存器中</li>
-<li>指令2：将寄存器中的count进行+1</li>
-<li>指令3：将count写入内存</li>
-</ol>
-<p>当线程A执行完指令1后，切换到线程B则发生原子性问题<br><img src="/images/pasted-4.png" alt="upload successful"></p>
-</li>
-</ol>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>我们知道导致cpu缓存导致了可见性问题，编译器优化带来了有序性问题。那么如果我们禁用了cpu缓存与编译器优化，就能够解决问题，但是性能就无法提升了。所以一个合理的方案，就是按照一定规范来禁用缓存和编译器优化，即在某些情况下禁用缓存与编译器优化。Java内存模型就是这样的一个规范，用来解决可见性与有序性问题</p>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>java内存模型本质上就是规范了JVM如何按照规则禁用缓存和编译器优化，既面向应用开发人员，也面向jvm的实现。这些规范包括了volatile、synchronized和final三个关键字，以及六项Happens-Before规则。</p>
+<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><p>volatile实质就是告诉编译器，对volatile修饰的变量，不能使用cpu缓存，必须从内存中读取或者写入</p>
+<h2 id="Happens-Before规则，简称为HB"><a href="#Happens-Before规则，简称为HB" class="headerlink" title="Happens-Before规则，简称为HB"></a>Happens-Before规则，简称为HB</h2><p>HB本质是一种可见性，即前面一个操作结果对后面的操作是可见的，换句话说就是后面的操作能够看见前面的操作结果。HB约束了编译器的优化行为，允许优化，但是优化后的结果要符合HB规则</p>
+<h4 id="同一线程顺序性规则"><a href="#同一线程顺序性规则" class="headerlink" title="同一线程顺序性规则"></a>同一线程顺序性规则</h4><p>这条规则是指在一个线程中，按照程序顺序，前面的操作HB于后续的操作</p>
+<h4 id="volatile变量规则"><a href="#volatile变量规则" class="headerlink" title="volatile变量规则"></a>volatile变量规则</h4><p>这条规则是指对一个 volatile 变量的写操作， HB于后续对这个变量的读操作</p>
+<h4 id="传递性"><a href="#传递性" class="headerlink" title="传递性"></a>传递性</h4><p>这条规则是指A HB于 B，B HB于 C，那么A HB 于C。根据以上三条格则继续看下面的例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class HappensBeforeDemo &#123;</span><br><span class="line">    int x &#x3D; 0;</span><br><span class="line">    volatile boolean v &#x3D; false;</span><br><span class="line">    public void write()&#123;</span><br><span class="line">        x &#x3D; 42;</span><br><span class="line">        v &#x3D; true;</span><br><span class="line">    &#125;</span><br><span class="line">    public void read()&#123;</span><br><span class="line">        if(v)&#123;</span><br><span class="line">            &#x2F;&#x2F;x为多少呢</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当线程A执行完write方法，线程B执行read方法后，读到了v为true后，x是多少呢？首先在线程A中，根据同一线程顺序性规则，x=42 HB与v=true；再根据volatile变量规则，v=true的写操作HB于v的读操作；再根据传递性规则，x=42 HB于v的读操作，所以线程B中的值一定为42。在java并发包中的工具类，正是依靠这三条规则来实现可见性的</p>
+<h4 id="synchronized锁规则"><a href="#synchronized锁规则" class="headerlink" title="synchronized锁规则"></a>synchronized锁规则</h4><p>这条规则指对一个锁的解锁操作HB于后续对这个锁的加锁加锁操作</p>
+<h4 id="线程start-规则"><a href="#线程start-规则" class="headerlink" title="线程start()规则"></a>线程start()规则</h4><p>主线程A启动子线程B后，子线程B能够看到主线程在启动子线程之前的操作结果</p>
+<h4 id="线程join规则"><a href="#线程join规则" class="headerlink" title="线程join规则"></a>线程join规则</h4><p>在主线程A中等待子线程B完成（主线程A通过调用子线程B的join方法实现），当子线程完成后（主线程中的join方法返回），主线程能够看到子线程的操作结果</p>
 
       
     </div>
@@ -393,8 +370,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/01/03/JVM-G1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="next" title="G1垃圾收集器学习">
-                <i class="fa fa-chevron-left"></i> G1垃圾收集器学习
+              <a href="/2020/01/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E5%8F%AF%E8%A7%81%E6%80%A7%E3%80%81%E9%A1%BA%E5%BA%8F%E6%80%A7%E3%80%81%E5%8E%9F%E5%AD%90%E6%80%A7/" rel="next" title="并发编程-可见性、顺序性、原子性">
+                <i class="fa fa-chevron-left"></i> 并发编程-可见性、顺序性、原子性
               </a>
             
           </div>
@@ -402,10 +379,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/01/05/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%EF%BC%9A%E8%A7%A3%E5%86%B3%E5%8F%AF%E8%A7%81%E6%80%A7%E4%B8%8E%E6%9C%89%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98/" rel="prev" title="并发编程-Java内存模型：解决可见性与有序性问题">
-                并发编程-Java内存模型：解决可见性与有序性问题 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -519,7 +492,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile"><span class="nav-number">3.</span> <span class="nav-text">volatile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Happens-Before规则，简称为HB"><span class="nav-number">4.</span> <span class="nav-text">Happens-Before规则，简称为HB</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#同一线程顺序性规则"><span class="nav-number">4.0.1.</span> <span class="nav-text">同一线程顺序性规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#volatile变量规则"><span class="nav-number">4.0.2.</span> <span class="nav-text">volatile变量规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#传递性"><span class="nav-number">4.0.3.</span> <span class="nav-text">传递性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#synchronized锁规则"><span class="nav-number">4.0.4.</span> <span class="nav-text">synchronized锁规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程start-规则"><span class="nav-number">4.0.5.</span> <span class="nav-text">线程start()规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程join规则"><span class="nav-number">4.0.6.</span> <span class="nav-text">线程join规则</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
