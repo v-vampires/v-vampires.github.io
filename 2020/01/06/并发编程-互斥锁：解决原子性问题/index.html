@@ -87,7 +87,7 @@
 <meta property="og:description" content="背景我们把多个操作在cpu执行中不被中断的特性叫原子性。而cpu的切换却是发生在cpu指令级别的，所以线程的切换造成了原子性问题。那么如果我们禁止cpu切换是否可行呢？答案是不行，因为在多核的情况下，如果有两个cpu线程同一时刻操作同一个变量，即使不发生线程切换，每个cpu各自执行也会发生错误（如执行count++操作，每个cpu执行的结果可能都是1）。这个问题的实质就是有多个线程在同时执行操作破">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-01-05T16:58:56.000Z">
-<meta property="article:modified_time" content="2020-01-06T15:39:56.954Z">
+<meta property="article:modified_time" content="2020-01-07T14:59:40.475Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
 
@@ -343,7 +343,7 @@
 </ol>
 <p>在Java 6之前，Monitor的实现是依靠操作系统内部的互斥锁，因为需要用户态与内核态的切换，所以同步操作是一个重量级的操作</p>
 <p>现代的JDK中，jvm提供了三种不同的monitor实现，也就是常说的偏斜锁，轻量级锁，重量级锁。所谓锁的升级、降级、就是jvm优化synchronized机制，当jvm检测到不同的状态，就切换到适合的锁实现。</p>
-<h2 id="ReentrantLock-重入锁"><a href="#ReentrantLock-重入锁" class="headerlink" title="ReentrantLock(重入锁)"></a>ReentrantLock(重入锁)</h2><h3 id="实现原理-1"><a href="#实现原理-1" class="headerlink" title="实现原理"></a>实现原理</h3><p>ReentrantLock是JDK实现的自旋锁，通过不断重试来获取锁，底层使用了AQS（抽象队列同步器）实现，AQS的实现原理单独开一篇文章来写。</p>
+<h2 id="ReentrantLock-重入锁"><a href="#ReentrantLock-重入锁" class="headerlink" title="ReentrantLock(重入锁)"></a>ReentrantLock(重入锁)</h2><h3 id="实现原理-1"><a href="#实现原理-1" class="headerlink" title="实现原理"></a>实现原理</h3><p>ReentrantLock是JDK实现的锁，底层使用了AQS（抽象队列同步器）实现，AQS的实现原理单独开一篇文章来写。</p>
 <h2 id="ReentrantLock相比synchronized的增强功能"><a href="#ReentrantLock相比synchronized的增强功能" class="headerlink" title="ReentrantLock相比synchronized的增强功能"></a>ReentrantLock相比synchronized的增强功能</h2><h3 id="ReentrantLock可以实现公平锁"><a href="#ReentrantLock可以实现公平锁" class="headerlink" title="ReentrantLock可以实现公平锁"></a>ReentrantLock可以实现公平锁</h3><p>公平锁是指当锁可用时，在锁上等待时间长的线程获得锁的使用权。而非公平锁是随机分配锁的使用权。ReentrantLock默认是使用非公平锁，因为非公平锁的性能更好，这与synchronized是一致的。当然公平锁在防止锁饥饿的情况下很好用</p>
 <h3 id="ReentrantLock可以在获取锁时限时等待"><a href="#ReentrantLock可以在获取锁时限时等待" class="headerlink" title="ReentrantLock可以在获取锁时限时等待"></a>ReentrantLock可以在获取锁时限时等待</h3><p>当使用synchronized的获取锁时，阻塞在锁上的线程除非获得锁，否则一直等待下去。而限时等待的方法则在规定的时间内，如果拿到锁就拿，拿不到就返回失败。限时等待的方法是tryLock(),可以选择传入时间参数，表示等待指定的时间，无参则表示立即返回获取锁的结果：true表示获取锁成功，false表示获取锁失败。我们可以使用该方法，配合失败重试机制来解决死锁问题。使用方式：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if(lock.tryLock())&#123;</span><br><span class="line">    try &#123;</span><br><span class="line"></span><br><span class="line">    &#125;finally &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;else&#123;</span><br><span class="line">    &#x2F;&#x2F;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
