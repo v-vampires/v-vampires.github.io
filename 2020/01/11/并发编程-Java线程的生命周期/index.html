@@ -79,15 +79,19 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://yoursite.com/categories/index.html">
+<meta name="description" content="介绍在Java领域，实现并发程序的主要手段就是多线程。而Java语言里面的线程本质是就是操作系统的线程，他们是一一对应的 生命周期java线程的生命周期分为初始状态（NEW）、可运行&#x2F;运行状态（RUNNABLE）、休眠状态（BLOCKED、WAITING、TIMED_WAITING）、终止状态（TERMINATED） 状态转换状态转换图如下 RUNNABLE与BLOCKED的状态转换只有一种场景会">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并发编程-Java线程的生命周期">
+<meta property="og:url" content="http://yoursite.com/2020/01/11/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/index.html">
 <meta property="og:site_name" content="v-vampires">
+<meta property="og:description" content="介绍在Java领域，实现并发程序的主要手段就是多线程。而Java语言里面的线程本质是就是操作系统的线程，他们是一一对应的 生命周期java线程的生命周期分为初始状态（NEW）、可运行&#x2F;运行状态（RUNNABLE）、休眠状态（BLOCKED、WAITING、TIMED_WAITING）、终止状态（TERMINATED） 状态转换状态转换图如下 RUNNABLE与BLOCKED的状态转换只有一种场景会">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-01-05T05:32:04.000Z">
-<meta property="article:modified_time" content="2020-01-05T06:23:31.789Z">
+<meta property="og:image" content="http://yoursite.com/images/pasted-8.png">
+<meta property="article:published_time" content="2020-01-11T14:23:32.000Z">
+<meta property="article:modified_time" content="2020-01-11T14:58:15.699Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-8.png">
 
 
 
@@ -117,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/categories/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/01/11/并发编程-Java线程的生命周期/"/>
 
 
 
 
 
-  <title>categories | v-vampires</title>
+  <title>并发编程-Java线程的生命周期 | v-vampires</title>
   
 
 
@@ -238,40 +242,152 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/11/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="v-vampires">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="v-vampires">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h1 class="post-title" itemprop="name headline">categories</h1>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
-          <div class="category-all-page">
-            <div class="category-all-title">
-                2 categories in total
-            </div>
-            <div class="category-all">
-              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JVM/">JVM</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a><span class="category-list-count">2</span></li></ul>
-            </div>
-          </div>
+          <h1 class="post-title" itemprop="name headline">并发编程-Java线程的生命周期</h1>
         
-      </div>
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-11T22:23:32+08:00">
+                2020-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span id="busuanzi_value_page_pv"></span>次阅读
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>在Java领域，实现并发程序的主要手段就是多线程。而Java语言里面的线程本质是就是操作系统的线程，他们是一一对应的</p>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p>java线程的生命周期分为初始状态（NEW）、可运行/运行状态（RUNNABLE）、休眠状态（BLOCKED、WAITING、TIMED_WAITING）、终止状态（TERMINATED）</p>
+<h2 id="状态转换"><a href="#状态转换" class="headerlink" title="状态转换"></a>状态转换</h2><p>状态转换图如下<br><img src="/images/pasted-8.png" alt="upload successful"></p>
+<h3 id="RUNNABLE与BLOCKED的状态转换"><a href="#RUNNABLE与BLOCKED的状态转换" class="headerlink" title="RUNNABLE与BLOCKED的状态转换"></a>RUNNABLE与BLOCKED的状态转换</h3><p>只有一种场景会触发这种转换，就是线程等待synchronized锁时，此时线程的状态由RUNNABLE转换到BLOCKED状态。而当等待的线程获得synchronized锁时，则由BLCOKED转换到RUNNABLE状态。<br>注意：如果线程调用阻塞式API时，在操作系统层面线程是会转换到休眠状态，但是在JVM层面，java的线程是不会变换的，依然为RUNNABLE状态。JVM层面并不关心操作系统线程的状态，在JVM看来，等待CPU使用权（操作系统层面此时处于可执行状态）与等待I/O（操作系统层面此时是处于休眠状态）没有区别，都是在等待某个资源，所以都归入了RUNNABLE状态</p>
+<h3 id="RUNNABLE与WAITING状态的转换"><a href="#RUNNABLE与WAITING状态的转换" class="headerlink" title="RUNNABLE与WAITING状态的转换"></a>RUNNABLE与WAITING状态的转换</h3><p>第一种场景：当线程获得synchronized锁后，调用无参的Object.wait()方法</p>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/10/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%AD%89%E5%BE%85%E9%80%9A%E7%9F%A5%E6%9C%BA%E5%88%B6/" rel="next" title="并发编程-等待通知机制">
+                <i class="fa fa-chevron-left"></i> 并发编程-等待通知机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -304,8 +420,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -356,6 +481,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期"><span class="nav-number">2.</span> <span class="nav-text">生命周期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#状态转换"><span class="nav-number">3.</span> <span class="nav-text">状态转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RUNNABLE与BLOCKED的状态转换"><span class="nav-number">3.1.</span> <span class="nav-text">RUNNABLE与BLOCKED的状态转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RUNNABLE与WAITING状态的转换"><span class="nav-number">3.2.</span> <span class="nav-text">RUNNABLE与WAITING状态的转换</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
