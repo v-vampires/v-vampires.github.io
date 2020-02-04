@@ -87,7 +87,7 @@
 <meta property="og:description" content="背景我们把多个操作在cpu执行中不被中断的特性叫原子性。而cpu的切换却是发生在cpu指令级别的，所以线程的切换造成了原子性问题。那么如果我们禁止cpu切换是否可行呢？答案是不行，因为在多核的情况下，如果有两个cpu线程同一时刻操作同一个变量，即使不发生线程切换，每个cpu各自执行也会发生错误（如执行count++操作，每个cpu执行的结果可能都是1）。这个问题的实质就是有多个线程在同时执行操作破">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-01-05T16:58:56.000Z">
-<meta property="article:modified_time" content="2020-01-07T14:59:40.475Z">
+<meta property="article:modified_time" content="2020-02-04T08:33:58.603Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
 
@@ -291,6 +291,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index">
+                    <span itemprop="name">并发编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
