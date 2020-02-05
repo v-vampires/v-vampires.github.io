@@ -79,17 +79,19 @@
 
 
 
-<meta name="description" content="为什么使用线程池无论是对象池还是线程池，池化的作用就是缓存对象或者线程，进而重复使用。我们常用创建线程的方法就是创建Thread对象，由于java中的线程是和操作系统的线程一一对应的，如果频繁创建和销毁线程，就会大大地浪费时间并影响程序的性能，因而线程池可以很好的解决这个问题 线程池线程池的核心类是java.util.concurrent.ThreadPoolExecutor，主要构造方法如下：">
+<meta name="description" content="背景并发编程时，我们为了处理一个大任务，通常会将一个大任务分成几个子任务然后分别去处理。还有一种情况是，将一个大任务分解成多个相似的子任务,再将子任务分解成相似的子子任务，直到子任务可以直接计算。这种思想就是分治思想，常见的应用场景如归并排序、快速排序、计算框架MapReduce等。这种任务模型就是我们常说的分治任务模型。 分治任务模型分治任务模型分为两个阶段，一个阶段是任务分解，就是将大任务分解">
 <meta property="og:type" content="article">
-<meta property="og:title" content="并发编程-线程池的使用">
-<meta property="og:url" content="http://yoursite.com/2020/01/13/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:title" content="并发编程-Fork&#x2F;Join框架">
+<meta property="og:url" content="http://yoursite.com/2020/02/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Fork-Join%E6%A1%86%E6%9E%B6/index.html">
 <meta property="og:site_name" content="v-vampires">
-<meta property="og:description" content="为什么使用线程池无论是对象池还是线程池，池化的作用就是缓存对象或者线程，进而重复使用。我们常用创建线程的方法就是创建Thread对象，由于java中的线程是和操作系统的线程一一对应的，如果频繁创建和销毁线程，就会大大地浪费时间并影响程序的性能，因而线程池可以很好的解决这个问题 线程池线程池的核心类是java.util.concurrent.ThreadPoolExecutor，主要构造方法如下：">
+<meta property="og:description" content="背景并发编程时，我们为了处理一个大任务，通常会将一个大任务分成几个子任务然后分别去处理。还有一种情况是，将一个大任务分解成多个相似的子任务,再将子任务分解成相似的子子任务，直到子任务可以直接计算。这种思想就是分治思想，常见的应用场景如归并排序、快速排序、计算框架MapReduce等。这种任务模型就是我们常说的分治任务模型。 分治任务模型分治任务模型分为两个阶段，一个阶段是任务分解，就是将大任务分解">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-01-13T15:27:39.000Z">
-<meta property="article:modified_time" content="2020-02-04T08:34:15.071Z">
+<meta property="og:image" content="http://yoursite.com/images/pasted-11.png">
+<meta property="article:published_time" content="2020-02-04T09:19:07.000Z">
+<meta property="article:modified_time" content="2020-02-05T09:48:54.971Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-11.png">
 
 
 
@@ -119,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/01/13/并发编程-线程池的使用/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/02/04/并发编程-Fork-Join框架/"/>
 
 
 
 
 
-  <title>并发编程-线程池的使用 | v-vampires</title>
+  <title>并发编程-Fork/Join框架 | v-vampires</title>
   
 
 
@@ -252,7 +254,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/13/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E4%BD%BF%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Fork-Join%E6%A1%86%E6%9E%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="v-vampires">
@@ -269,7 +271,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">并发编程-线程池的使用</h1>
+          <h1 class="post-title" itemprop="name headline">并发编程-Fork/Join框架</h1>
         
 
         <div class="post-meta">
@@ -281,8 +283,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-13T23:27:39+08:00">
-                2020-01-13
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-04T17:19:07+08:00">
+                2020-02-04
               </time>
             
 
@@ -291,28 +293,6 @@
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index">
-                    <span itemprop="name">并发编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -351,24 +331,19 @@
       
 
       
-        <h2 id="为什么使用线程池"><a href="#为什么使用线程池" class="headerlink" title="为什么使用线程池"></a>为什么使用线程池</h2><p>无论是对象池还是线程池，池化的作用就是缓存对象或者线程，进而重复使用。我们常用创建线程的方法就是创建Thread对象，由于java中的线程是和操作系统的线程一一对应的，如果频繁创建和销毁线程，就会大大地浪费时间并影响程序的性能，因而线程池可以很好的解决这个问题</p>
-<h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><p>线程池的核心类是java.util.concurrent.ThreadPoolExecutor，主要构造方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public ThreadPoolExecutor(int corePoolSize,</span><br><span class="line">                          int maximumPoolSize,</span><br><span class="line">                          long keepAliveTime,</span><br><span class="line">                          TimeUnit unit,</span><br><span class="line">                          BlockingQueue&lt;Runnable&gt; workQueue,</span><br><span class="line">                          ThreadFactory threadFactory,</span><br><span class="line">                          RejectedExecutionHandler handler)</span><br></pre></td></tr></table></figure>
-<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><p>corePoolSize：核心线程池大小，如果核心线程池没有满，新的任务就会被新建的一个核心线程执行，执行完毕后不会销毁线程，线程会读取工作队列中的任务继续执行，如果队列中没有任务，则线程阻塞,当队列中有任务后，线程被唤醒继续执行</p>
-<p>maximumPoolSize：线程池能创建的最大的线程数量，如果核心线程和缓存队列都已经满了，新的任务进来<br>就会被新建的线程执行，但是线程数量不能超过maximumPoolSize的大小。如果线程数量已经达到maximumPoolSize，则新来的任务就会执行拒绝策略  </p>
-<p>keepAliveTime：非核心线程空闲后能够存活的最长时间，超过次时间，线程终止</p>
-<p>unit：时间单位，配合keepAliveTime使用</p>
-<p>workQueue：工作队列，用来存放被执行的任务。我们往线程池提交的就是任务</p>
-<p>threadFactory：线程工厂，用来创建线程</p>
-<p>handler：任务被拒绝后的处理策略.默认提供的4种拒绝处理策略</p>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>并发编程时，我们为了处理一个大任务，通常会将一个大任务分成几个子任务然后分别去处理。还有一种情况是，将一个大任务分解成多个相似的子任务,再将子任务分解成相似的子子任务，直到子任务可以直接计算。这种思想就是分治思想，常见的应用场景如归并排序、快速排序、计算框架MapReduce等。这种任务模型就是我们常说的分治任务模型。</p>
+<h2 id="分治任务模型"><a href="#分治任务模型" class="headerlink" title="分治任务模型"></a>分治任务模型</h2><p>分治任务模型分为两个阶段，一个阶段是任务分解，就是将大任务分解成子任务，再讲子任务分解成子子任务，直到任务可以直接计算；另一个阶段是计算结果合并，逐层合并子任务的结果，直至获取到最终的结果，下图是一个简化的分治任务模型图</p>
+<p><img src="/images/pasted-11.png" alt="upload successful"></p>
+<h2 id="Fork-Join的使用"><a href="#Fork-Join的使用" class="headerlink" title="Fork/Join的使用"></a>Fork/Join的使用</h2><p>Fork/Join是一个并行的计算框架，用来支持分治任务模型。Fork对应任务模型的任务分解，Join对应的是计算结果合并。Fork/Join框架包含两部分，一部分是分治任务的线程池ForkJoinPool，一部分是分治任务ForkJoinTask，这两部分的关系类似于ThreadPoolExecutor于Runnable的关系，都可以理解为提交任务到线程池  </p>
+<p>ForkJoinTask是一个抽象类，核心的方法是fork()于join()方法，其中fork方法会异步执行一个子任务，而join方法则会阻塞当前线程来等待子任务的执行结果。ForkJoinTask有两个子类RecursiveAction 和 RecursiveTask，这两个子类都定义了抽象的compute()方法，区别是RecursiveAction的compute方法没有返回值，而RecursiveTask则有返回值。</p>
+<p>代码示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    ForkJoinPool pool &#x3D; new ForkJoinPool(4);</span><br><span class="line">    &#x2F;&#x2F;创建任务</span><br><span class="line">    FibonacciTask task &#x3D; new FibonacciTask(10);</span><br><span class="line">    &#x2F;&#x2F;启动任务</span><br><span class="line">    Integer result &#x3D; pool.invoke(task);</span><br><span class="line">    System.out.println(result);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static class FibonacciTask extends RecursiveTask&lt;Integer&gt;&#123;</span><br><span class="line"></span><br><span class="line">    private final int n;</span><br><span class="line"></span><br><span class="line">    public FibonacciTask(int n) &#123;</span><br><span class="line">        this.n &#x3D; n;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected Integer compute() &#123;</span><br><span class="line">        if(n &lt;&#x3D;1) return n;</span><br><span class="line">        FibonacciTask f1 &#x3D; new FibonacciTask(n-1);</span><br><span class="line">        &#x2F;&#x2F;异步执行子任务f1</span><br><span class="line">        f1.fork();</span><br><span class="line">        FibonacciTask f2 &#x3D; new FibonacciTask(n-2);</span><br><span class="line">        &#x2F;&#x2F;f2再当前线程中执行</span><br><span class="line">        Integer r2 &#x3D; f2.compute();</span><br><span class="line">        Integer r1 &#x3D; f1.join();</span><br><span class="line">        return r2 + r1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>特别需要注意的点：  </p>
 <ol>
-<li>java.util.concurrent.ThreadPoolExecutor.AbortPolicy：丢弃任务并抛出异常</li>
-<li>java.util.concurrent.ThreadPoolExecutor.DiscardPolicy：丢弃任务，不抛出异常</li>
-<li>java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy：丢弃工作队列种最前面的任务，然后尝试重新执行次任务</li>
-<li>java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理此任务</li>
+<li>一定不能写成如下方式<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 分别对子任务调用fork():</span><br><span class="line">subtask1.fork();</span><br><span class="line">subtask2.fork();</span><br></pre></td></tr></table></figure>
+因为这样，两个子任务都是在子线程中执行，而当前线程会空闲，而子任务可能又fork两个子子线程，子线程也会变成空闲，这样就会浪费很多线程</li>
+<li>需要先f2.compute(),再f1.join()；如果反过来则会因为f1.join()导致线程阻塞，f1完成之后才执行f2导致并发度降低</li>
 </ol>
-<h2 id="线程池处理流程"><a href="#线程池处理流程" class="headerlink" title="线程池处理流程"></a>线程池处理流程</h2><p>添加任务时：（1）如果当前线程数小于核心线程数，则创建新线程（构造一个worker对象）执行；（2）如果大于等于核心线程数，则添加到任务队列，（3）当任务队列满了以后，则创建新线程执行；（4）当线程数大于最大线程数时，则执行拒绝策略。当线程执行完当前的任务后，则会从队列中获取任务继续执行。如果队列中没有则阻塞，因此线程并不会死亡。除非线程池关闭或者是超过core的线程的空闲时间达到keepAliveTime。正常的应用应该是绝大多数的任务应执行步骤2，也就是将任务添加到队列。当超过核心数的线程空闲时间达到keepAliveTime时，则终止该线程</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>使用线程池提交任务时，如果任务在执行过程中出现运行异常，会导致执行任务的线程终止；而且任务异常终止，我们却获取不到通知，会让人误以为线程正常执行，因此需要在任务里面捕获异常</p>
 
       
     </div>
@@ -393,8 +368,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/01/11/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" rel="next" title="并发编程-Java线程的生命周期">
-                <i class="fa fa-chevron-left"></i> 并发编程-Java线程的生命周期
+              <a href="/2020/01/16/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-CompletableFuture%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="next" title="并发编程-CompletableFuture的使用">
+                <i class="fa fa-chevron-left"></i> 并发编程-CompletableFuture的使用
               </a>
             
           </div>
@@ -402,10 +377,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/01/16/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-CompletableFuture%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="prev" title="并发编程-CompletableFuture的使用">
-                并发编程-CompletableFuture的使用 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -528,7 +499,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么使用线程池"><span class="nav-number">1.</span> <span class="nav-text">为什么使用线程池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程池"><span class="nav-number">2.</span> <span class="nav-text">线程池</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数"><span class="nav-number">2.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程池处理流程"><span class="nav-number">3.</span> <span class="nav-text">线程池处理流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">4.</span> <span class="nav-text">注意</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分治任务模型"><span class="nav-number">2.</span> <span class="nav-text">分治任务模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fork-Join的使用"><span class="nav-number">3.</span> <span class="nav-text">Fork&#x2F;Join的使用</span></a></li></ol></div>
             
 
           </div>
