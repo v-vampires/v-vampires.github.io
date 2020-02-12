@@ -79,19 +79,22 @@
 
 
 
-<meta name="description" content="背景并发编程时，我们为了处理一个大任务，通常会将一个大任务分成几个子任务然后分别去处理。还有一种情况是，将一个大任务分解成多个相似的子任务,再将子任务分解成相似的子子任务，直到子任务可以直接计算。这种思想就是分治思想，常见的应用场景如归并排序、快速排序、计算框架MapReduce等。这种任务模型就是我们常说的分治任务模型。 分治任务模型分治任务模型分为两个阶段，一个阶段是任务分解，就是将大任务分解">
+<meta name="description" content="索引本质MySQL官方对索引的定义为：索引（Index）是帮助MySQL高效获取数据的数据结构。 查询是数据库的主要功能之一，顺序查找算法在数据量大的时候性能很糟糕，而各种优秀的查找算法，又只能应用再特定的数据结构之上。例如二分查找适用于有序的数据，而二叉树查找只能用于二叉树查找。但是一张表的数据有多列，不可能多列都符合一种数据结构（例如两列不可能都按照顺序组织，主键是有序的，那么另外一列可能就是">
 <meta property="og:type" content="article">
-<meta property="og:title" content="并发编程-Fork&#x2F;Join框架">
-<meta property="og:url" content="http://yoursite.com/2020/02/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Fork-Join%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:title" content="Mysql-InnoDB索引">
+<meta property="og:url" content="http://yoursite.com/2020/02/10/Mysql-InnoDB%E7%B4%A2%E5%BC%95/index.html">
 <meta property="og:site_name" content="v-vampires">
-<meta property="og:description" content="背景并发编程时，我们为了处理一个大任务，通常会将一个大任务分成几个子任务然后分别去处理。还有一种情况是，将一个大任务分解成多个相似的子任务,再将子任务分解成相似的子子任务，直到子任务可以直接计算。这种思想就是分治思想，常见的应用场景如归并排序、快速排序、计算框架MapReduce等。这种任务模型就是我们常说的分治任务模型。 分治任务模型分治任务模型分为两个阶段，一个阶段是任务分解，就是将大任务分解">
+<meta property="og:description" content="索引本质MySQL官方对索引的定义为：索引（Index）是帮助MySQL高效获取数据的数据结构。 查询是数据库的主要功能之一，顺序查找算法在数据量大的时候性能很糟糕，而各种优秀的查找算法，又只能应用再特定的数据结构之上。例如二分查找适用于有序的数据，而二叉树查找只能用于二叉树查找。但是一张表的数据有多列，不可能多列都符合一种数据结构（例如两列不可能都按照顺序组织，主键是有序的，那么另外一列可能就是">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://yoursite.com/images/pasted-11.png">
-<meta property="article:published_time" content="2020-02-04T09:19:07.000Z">
-<meta property="article:modified_time" content="2020-02-05T09:48:54.971Z">
+<meta property="og:image" content="http://yoursite.com/images/pasted-12.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-13.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-14.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-15.png">
+<meta property="article:published_time" content="2020-02-10T15:51:14.000Z">
+<meta property="article:modified_time" content="2020-02-12T14:07:45.346Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/pasted-11.png">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-12.png">
 
 
 
@@ -121,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/02/04/并发编程-Fork-Join框架/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/02/10/Mysql-InnoDB索引/"/>
 
 
 
 
 
-  <title>并发编程-Fork/Join框架 | v-vampires</title>
+  <title>Mysql-InnoDB索引 | v-vampires</title>
   
 
 
@@ -254,7 +257,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Fork-Join%E6%A1%86%E6%9E%B6/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/10/Mysql-InnoDB%E7%B4%A2%E5%BC%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="v-vampires">
@@ -271,7 +274,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">并发编程-Fork/Join框架</h1>
+          <h1 class="post-title" itemprop="name headline">Mysql-InnoDB索引</h1>
         
 
         <div class="post-meta">
@@ -283,8 +286,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-04T17:19:07+08:00">
-                2020-02-04
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-10T23:51:14+08:00">
+                2020-02-10
               </time>
             
 
@@ -331,18 +334,23 @@
       
 
       
-        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>并发编程时，我们为了处理一个大任务，通常会将一个大任务分成几个子任务然后分别去处理。还有一种情况是，将一个大任务分解成多个相似的子任务,再将子任务分解成相似的子子任务，直到子任务可以直接计算。这种思想就是分治思想，常见的应用场景如归并排序、快速排序、计算框架MapReduce等。这种任务模型就是我们常说的分治任务模型。</p>
-<h2 id="分治任务模型"><a href="#分治任务模型" class="headerlink" title="分治任务模型"></a>分治任务模型</h2><p>分治任务模型分为两个阶段，一个阶段是任务分解，就是将大任务分解成子任务，再讲子任务分解成子子任务，直到任务可以直接计算；另一个阶段是计算结果合并，逐层合并子任务的结果，直至获取到最终的结果，下图是一个简化的分治任务模型图</p>
-<p><img src="/images/pasted-11.png" alt="upload successful"></p>
-<h2 id="Fork-Join的使用"><a href="#Fork-Join的使用" class="headerlink" title="Fork/Join的使用"></a>Fork/Join的使用</h2><p>Fork/Join是一个并行的计算框架，用来支持分治任务模型。Fork对应任务模型的任务分解，Join对应的是计算结果合并。Fork/Join框架包含两部分，一部分是分治任务的线程池ForkJoinPool，一部分是分治任务ForkJoinTask，这两部分的关系类似于ThreadPoolExecutor于Runnable的关系，都可以理解为提交任务到线程池  </p>
-<p>ForkJoinTask是一个抽象类，核心的方法是fork()于join()方法，其中fork方法会异步执行一个子任务，而join方法则会阻塞当前线程来等待子任务的执行结果。ForkJoinTask有两个子类RecursiveAction 和 RecursiveTask，这两个子类都定义了抽象的compute()方法，区别是RecursiveAction的compute方法没有返回值，而RecursiveTask则有返回值。</p>
-<p>代码示例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    ForkJoinPool pool &#x3D; new ForkJoinPool(4);</span><br><span class="line">    &#x2F;&#x2F;创建任务</span><br><span class="line">    FibonacciTask task &#x3D; new FibonacciTask(10);</span><br><span class="line">    &#x2F;&#x2F;启动任务</span><br><span class="line">    Integer result &#x3D; pool.invoke(task);</span><br><span class="line">    System.out.println(result);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static class FibonacciTask extends RecursiveTask&lt;Integer&gt;&#123;</span><br><span class="line"></span><br><span class="line">    private final int n;</span><br><span class="line"></span><br><span class="line">    public FibonacciTask(int n) &#123;</span><br><span class="line">        this.n &#x3D; n;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected Integer compute() &#123;</span><br><span class="line">        if(n &lt;&#x3D;1) return n;</span><br><span class="line">        FibonacciTask f1 &#x3D; new FibonacciTask(n-1);</span><br><span class="line">        &#x2F;&#x2F;异步执行子任务f1</span><br><span class="line">        f1.fork();</span><br><span class="line">        FibonacciTask f2 &#x3D; new FibonacciTask(n-2);</span><br><span class="line">        &#x2F;&#x2F;f2再当前线程中执行</span><br><span class="line">        Integer r2 &#x3D; f2.compute();</span><br><span class="line">        Integer r1 &#x3D; f1.join();</span><br><span class="line">        return r2 + r1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>特别需要注意的点：  </p>
+        <h2 id="索引本质"><a href="#索引本质" class="headerlink" title="索引本质"></a>索引本质</h2><p>MySQL官方对索引的定义为：索引（Index）是帮助MySQL高效获取数据的数据结构。</p>
+<p>查询是数据库的主要功能之一，顺序查找算法在数据量大的时候性能很糟糕，而各种优秀的查找算法，又只能应用再特定的数据结构之上。例如二分查找适用于有序的数据，而二叉树查找只能用于二叉树查找。但是一张表的数据有多列，不可能多列都符合一种数据结构（例如两列不可能都按照顺序组织，主键是有序的，那么另外一列可能就是无序的，如果按照主键查找可以使用二分算法，但是按照另外一列查找则只能顺序查找）。因此，再表数据之外，以另外一列排序再建立一个数据结构（可以理解为是另一张表，简记为索引表）并关联到原表数据，这样再按照该列查找数据时，可以先查这个索引表，再查原表</p>
+<h2 id="索引结构"><a href="#索引结构" class="headerlink" title="索引结构"></a>索引结构</h2><p>常见的索引结构有哈希表、有序数组、搜索树  </p>
+<p>哈希表：优点是：等值查询、新增都很快。但是由于数据不是有序的，区间查询需要全部扫描，就会很慢。所以哈希表适用于等值查询的场景，如：Memcached  </p>
+<p>有序数组：优点：等值查询，区间查询都很好，但是新增数据成本很高，中间插入一条记录就需要移动后面所有的数据。所以有序数组适用于静态存储引擎，适用于存储一些不会修改的数据</p>
+<p>二叉搜索树：二叉树的搜索效率是最高的，但是实际中数据库索引并不使用二叉树，因为索引不止存在于内存中，还要写到磁盘上。而二叉树的高度很高，那么查询一个叶子节点就需要作很多IO操作，性能很差</p>
+<p>B树：B树是一个多路搜索树，如下图。数据（主键或者内存地址）同时存在于叶子节点和非叶子节点，这样存在三个问题：1、一个节点存储既存储了key也存储了data，就不能存储更多的key，会导致树的高度变高，增加IO次数；2、由于数据同时存在于叶子节点和非叶子节点，无法简单的完成按照顺序遍历关键字。只能按照中序遍历方法；3、查询性能不稳定，有可能在第一个节点就查到数据。<br><img src="/images/pasted-12.png" alt="upload successful"></p>
+<p>B+树：多路搜索树，如下图。B+树最大的每一个非叶子节点都不存data信息，这样一个非叶子节点可以存储更多的key，能减少树的高度。数据都存在于叶子节点，每次查询的复杂度是固定的，稳定性也有保证了。同时叶子节点增加了横向指针，可以非常容易的进行顺序遍历。<br><img src="/images/pasted-13.png" alt="upload successful"></p>
+<p>B+树的检索过程如下：<br><img src="/images/pasted-14.png" alt="upload successful"><br>通常向下读取一个节点的动作可能会是一次磁盘IO操作，不过非叶子节点通常会在初始阶段载入内存以加快访问速度。同时为了提高在节点间的横向遍历速度，真实数据库可能会将上图中蓝色的cpu计算/内存读取优化成二叉搜索树</p>
+<h2 id="聚簇索引和非聚簇索引"><a href="#聚簇索引和非聚簇索引" class="headerlink" title="聚簇索引和非聚簇索引"></a>聚簇索引和非聚簇索引</h2><p>聚簇索引：将数据存储与索引放到了一块，索引结构的叶子节点保存了行数据<br>非聚簇索引：将数据与索引分开存储，索引结构的叶子节点指向了数据对应的位置</p>
+<p>InnoDB引擎主键索引就是使用的聚簇索引，非主键索引使用的非聚簇索引（对应的叶子节点存储的是主键ID）<br>MyISAM引擎主键索引和非主键索引都是非聚簇索引（对应的叶子节点都是存储的数据地址）<br>InnoDB引擎与MyISAM引擎的索引结构区别如下：</p>
+<p><img src="/images/pasted-15.png" alt="upload successful"></p>
+<p>注意：在B+树中，要求键值必须唯一，但是辅助键非主键索引（就是非主键索引）是可以不唯一的，因此在辅助索引中，就把辅助键的值和主键的值合起来就作为B+树的真正键值</p>
+<p>聚簇索引的优点：</p>
 <ol>
-<li>一定不能写成如下方式<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 分别对子任务调用fork():</span><br><span class="line">subtask1.fork();</span><br><span class="line">subtask2.fork();</span><br></pre></td></tr></table></figure>
-因为这样，两个子任务都是在子线程中执行，而当前线程会空闲，而子任务可能又fork两个子子线程，子线程也会变成空闲，这样就会浪费很多线程</li>
-<li>需要先f2.compute(),再f1.join()；如果反过来则会因为f1.join()导致线程阻塞，f1完成之后才执行f2导致并发度降低</li>
+<li>行数据与叶子节点存储在一起，这样主键和行数据一起载入内存；找到叶子节点就可以立刻返回行数据了。如果按照主键id来检索数据，获得数据更快</li>
+<li>辅助索引使用主键作为指针，避免了当行数据出现移动时避免需要更新辅助索引中的这个“指针”</li>
 </ol>
 
       
@@ -368,8 +376,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/01/16/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-CompletableFuture%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="next" title="并发编程-CompletableFuture的使用">
-                <i class="fa fa-chevron-left"></i> 并发编程-CompletableFuture的使用
+              <a href="/2020/02/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Fork-Join%E6%A1%86%E6%9E%B6/" rel="next" title="并发编程-Fork/Join框架">
+                <i class="fa fa-chevron-left"></i> 并发编程-Fork/Join框架
               </a>
             
           </div>
@@ -377,10 +385,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/02/10/Mysql-InnoDB%E7%B4%A2%E5%BC%95/" rel="prev" title="Mysql-InnoDB索引">
-                Mysql-InnoDB索引 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -503,7 +507,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分治任务模型"><span class="nav-number">2.</span> <span class="nav-text">分治任务模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fork-Join的使用"><span class="nav-number">3.</span> <span class="nav-text">Fork&#x2F;Join的使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#索引本质"><span class="nav-number">1.</span> <span class="nav-text">索引本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引结构"><span class="nav-number">2.</span> <span class="nav-text">索引结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚簇索引和非聚簇索引"><span class="nav-number">3.</span> <span class="nav-text">聚簇索引和非聚簇索引</span></a></li></ol></div>
             
 
           </div>
