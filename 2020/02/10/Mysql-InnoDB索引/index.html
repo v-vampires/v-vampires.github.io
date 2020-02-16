@@ -90,8 +90,9 @@
 <meta property="og:image" content="http://yoursite.com/images/pasted-13.png">
 <meta property="og:image" content="http://yoursite.com/images/pasted-14.png">
 <meta property="og:image" content="http://yoursite.com/images/pasted-15.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-16.png">
 <meta property="article:published_time" content="2020-02-10T15:51:14.000Z">
-<meta property="article:modified_time" content="2020-02-12T14:07:45.346Z">
+<meta property="article:modified_time" content="2020-02-16T10:02:12.809Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/images/pasted-12.png">
@@ -352,6 +353,16 @@
 <li>行数据与叶子节点存储在一起，这样主键和行数据一起载入内存；找到叶子节点就可以立刻返回行数据了。如果按照主键id来检索数据，获得数据更快</li>
 <li>辅助索引使用主键作为指针，避免了当行数据出现移动时避免需要更新辅助索引中的这个“指针”</li>
 </ol>
+<h2 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h2><p>如果执行的语句是 select ID from T where k between 3 and 5，这时只需要查 ID 的值，而 ID 的值已经在 k 索引树上了，因此可以直接提供查询结果，不需要回表。也就是说，在这个查询里面，索引 k 已经“覆盖了”我们的查询需求，我们称为覆盖索引。</p>
+<h2 id="前缀索引"><a href="#前缀索引" class="headerlink" title="前缀索引"></a>前缀索引</h2><p>MySQL 是支持前缀索引的，也就是说，你可以定义字符串的一部分作为索引,如：alter table SUser add index index2(email(6));默认地，如果你创建索引的语句不指定前缀长度，那么索引就会包含整个字符串。使用前缀索引，定义好长度，就可以做到既节省空间，又不用额外增加太多的查询成本。使用前缀索引可能会增加扫描行数，这会影响到性能；使用前缀索引就用不上覆盖索引对查询性能的优化了，这也是在选择是否使用前缀索引时需要考虑的一个因素</p>
+<h2 id="最左前缀原则"><a href="#最左前缀原则" class="headerlink" title="最左前缀原则"></a>最左前缀原则</h2><p>最左前缀原则就是利用索引的“最左前缀”来定位记录，也可以理解为使用索引前边的一部分。为了直观的说明这个概念，我们用（name,age）这个联合索引来分析。</p>
+<p><img src="/images/pasted-16.png" alt="upload successful"><br>可以看到，索引项是按照索引定义里面出现的顺序排序的</p>
+<p>当你的逻辑需求是查到所有名字是张三的人时，可以快速定位到ID4，然后向后遍历得到所有的结果</p>
+<p>如果你要查的是所有名字第一个字是“张”的人，你的 SQL 语句的条件是”where name like ‘张 %’”。这时，你也能够用上这个索引，查找到第一个符合条件的记录是 ID3，然后向后遍历，直到不满足条件为止。</p>
+<p>可以看到，不只是索引的全部定义，只要满足最左前缀，就可以利用索引来加速检索。这个最左前缀可以是联合索引的最左 N 个字段，也可以是字符串索引的最左 M 个字符</p>
+<p>那么，如果既有联合查询，又有基于 a、b 各自的查询呢？查询条件里面只有 b 的语句，是无法使用 (a,b) 这个联合索引的，这时候你不得不维护另外一个索引，也就是说你需要同时维护 (a,b)、(b) 这两个索引。如果是abc联合索引，只有当a或者ab或者abc为条件时才能触发索引。ac也是会触发联合索引的，只是与只使用a是一致的</p>
+<p>最左前缀匹配原则，非常重要的原则，mysql会一直向右匹配直到遇到范围查询(&gt;、&lt;、between、like)就停止匹配，比如a = 1 and b = 2 and c &gt; 3 and d = 4 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d的顺序可以任意调整。原理：联合索引的排序是先按照a排序，如果a相等再按照b排序。如果a是范围查找，那么b是无序的，所以在上面的例子中由于c列是范围查找，那么d列就是无序的，所以d列无法使用索引。还有一点需要注意：sql语句中的字段顺序不需要和联合索引中定义的顺序一致，查询优化器会自己调整顺序</p>
+<h2 id="常见误区"><a href="#常见误区" class="headerlink" title="常见误区"></a>常见误区</h2><p>between,&gt;,&lt;,in是否使用索引并不是简单一刀切的，between,&gt;,&lt;跟范围有关，而in是和条件字符串的长度有关</p>
 
       
     </div>
@@ -507,7 +518,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#索引本质"><span class="nav-number">1.</span> <span class="nav-text">索引本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引结构"><span class="nav-number">2.</span> <span class="nav-text">索引结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚簇索引和非聚簇索引"><span class="nav-number">3.</span> <span class="nav-text">聚簇索引和非聚簇索引</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#索引本质"><span class="nav-number">1.</span> <span class="nav-text">索引本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引结构"><span class="nav-number">2.</span> <span class="nav-text">索引结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚簇索引和非聚簇索引"><span class="nav-number">3.</span> <span class="nav-text">聚簇索引和非聚簇索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#覆盖索引"><span class="nav-number">4.</span> <span class="nav-text">覆盖索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前缀索引"><span class="nav-number">5.</span> <span class="nav-text">前缀索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最左前缀原则"><span class="nav-number">6.</span> <span class="nav-text">最左前缀原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见误区"><span class="nav-number">7.</span> <span class="nav-text">常见误区</span></a></li></ol></div>
             
 
           </div>
