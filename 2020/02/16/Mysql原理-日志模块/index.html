@@ -79,17 +79,19 @@
 
 
 
-<meta name="description" content="为什么使用线程池无论是对象池还是线程池，池化的作用就是缓存对象或者线程，进而重复使用。我们常用创建线程的方法就是创建Thread对象，由于java中的线程是和操作系统的线程一一对应的，如果频繁创建和销毁线程，就会大大地浪费时间并影响程序的性能，因而线程池可以很好的解决这个问题 线程池线程池的核心类是java.util.concurrent.ThreadPoolExecutor，主要构造方法如下：">
+<meta name="description" content="主要涉及三个模块 redo log（重做日志）作用保证事物的持久性，当发生故障，尚有脏页的数据未写入磁盘时，在mysql重启服务的时候根据redo log进行重做，从而达到事物的持久性 原理在mysql里面，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程 IO 成本、查找成本都很高。为了解决这个问题，MySQL 的设计者就用了类似酒店掌柜粉板的思路来提升更">
 <meta property="og:type" content="article">
-<meta property="og:title" content="并发编程-线程池的使用">
-<meta property="og:url" content="http://yoursite.com/2020/01/13/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:title" content="Mysql原理-日志模块">
+<meta property="og:url" content="http://yoursite.com/2020/02/16/Mysql%E5%8E%9F%E7%90%86-%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97/index.html">
 <meta property="og:site_name" content="v-vampires">
-<meta property="og:description" content="为什么使用线程池无论是对象池还是线程池，池化的作用就是缓存对象或者线程，进而重复使用。我们常用创建线程的方法就是创建Thread对象，由于java中的线程是和操作系统的线程一一对应的，如果频繁创建和销毁线程，就会大大地浪费时间并影响程序的性能，因而线程池可以很好的解决这个问题 线程池线程池的核心类是java.util.concurrent.ThreadPoolExecutor，主要构造方法如下：">
+<meta property="og:description" content="主要涉及三个模块 redo log（重做日志）作用保证事物的持久性，当发生故障，尚有脏页的数据未写入磁盘时，在mysql重启服务的时候根据redo log进行重做，从而达到事物的持久性 原理在mysql里面，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程 IO 成本、查找成本都很高。为了解决这个问题，MySQL 的设计者就用了类似酒店掌柜粉板的思路来提升更">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-01-13T15:27:39.000Z">
-<meta property="article:modified_time" content="2020-02-04T08:34:15.071Z">
+<meta property="og:image" content="http://yoursite.com/images/pasted-17.png">
+<meta property="article:published_time" content="2020-02-16T10:21:04.000Z">
+<meta property="article:modified_time" content="2020-02-20T03:52:42.415Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/images/pasted-17.png">
 
 
 
@@ -119,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/01/13/并发编程-线程池的使用/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/02/16/Mysql原理-日志模块/"/>
 
 
 
 
 
-  <title>并发编程-线程池的使用 | v-vampires</title>
+  <title>Mysql原理-日志模块 | v-vampires</title>
   
 
 
@@ -252,7 +254,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/01/13/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E4%BD%BF%E7%94%A8/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/16/Mysql%E5%8E%9F%E7%90%86-%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="v-vampires">
@@ -269,7 +271,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">并发编程-线程池的使用</h1>
+          <h1 class="post-title" itemprop="name headline">Mysql原理-日志模块</h1>
         
 
         <div class="post-meta">
@@ -281,8 +283,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-13T23:27:39+08:00">
-                2020-01-13
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-16T18:21:04+08:00">
+                2020-02-16
               </time>
             
 
@@ -291,28 +293,6 @@
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" itemprop="url" rel="index">
-                    <span itemprop="name">并发编程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -351,25 +331,42 @@
       
 
       
-        <h2 id="为什么使用线程池"><a href="#为什么使用线程池" class="headerlink" title="为什么使用线程池"></a>为什么使用线程池</h2><p>无论是对象池还是线程池，池化的作用就是缓存对象或者线程，进而重复使用。我们常用创建线程的方法就是创建Thread对象，由于java中的线程是和操作系统的线程一一对应的，如果频繁创建和销毁线程，就会大大地浪费时间并影响程序的性能，因而线程池可以很好的解决这个问题</p>
-<h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><p>线程池的核心类是java.util.concurrent.ThreadPoolExecutor，主要构造方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public ThreadPoolExecutor(int corePoolSize,</span><br><span class="line">                          int maximumPoolSize,</span><br><span class="line">                          long keepAliveTime,</span><br><span class="line">                          TimeUnit unit,</span><br><span class="line">                          BlockingQueue&lt;Runnable&gt; workQueue,</span><br><span class="line">                          ThreadFactory threadFactory,</span><br><span class="line">                          RejectedExecutionHandler handler)</span><br></pre></td></tr></table></figure>
-<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><p>corePoolSize：核心线程池大小，如果核心线程池没有满，新的任务就会被新建的一个核心线程执行，执行完毕后不会销毁线程，线程会读取工作队列中的任务继续执行，如果队列中没有任务，则线程阻塞,当队列中有任务后，线程被唤醒继续执行</p>
-<p>maximumPoolSize：线程池能创建的最大的线程数量，如果核心线程和缓存队列都已经满了，新的任务进来<br>就会被新建的线程执行，但是线程数量不能超过maximumPoolSize的大小。如果线程数量已经达到maximumPoolSize，则新来的任务就会执行拒绝策略  </p>
-<p>keepAliveTime：非核心线程空闲后能够存活的最长时间，超过次时间，线程终止</p>
-<p>unit：时间单位，配合keepAliveTime使用</p>
-<p>workQueue：工作队列，用来存放被执行的任务。我们往线程池提交的就是任务</p>
-<p>threadFactory：线程工厂，用来创建线程</p>
-<p>handler：任务被拒绝后的处理策略.默认提供的4种拒绝处理策略</p>
+        <p>主要涉及三个模块</p>
+<h2 id="redo-log（重做日志）"><a href="#redo-log（重做日志）" class="headerlink" title="redo log（重做日志）"></a>redo log（重做日志）</h2><h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>保证事物的持久性，当发生故障，尚有脏页的数据未写入磁盘时，在mysql重启服务的时候根据redo log进行重做，从而达到事物的持久性</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>在mysql里面，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程 IO 成本、查找成本都很高。为了解决这个问题，MySQL 的设计者就用了类似酒店掌柜粉板的思路来提升更新效率；而粉板和账本配合的整个过程，其实就是 MySQL 里经常说到的 WAL 技术，WAL 的全称是 Write-Ahead Logging（预写式日志），它的关键点就是先写日志，再写磁盘，也就是先写粉板，等不忙的时候再写账本。</p>
+<p>具体来说，当有一条记录需要更新的时候，InnoDB 引擎就会先把记录写到 redo log（粉板）里面，并更新内存，这个时候更新就算完成了。那么引擎什么时候再将数据从内存中刷到磁盘呢？有以下几种情况：</p>
 <ol>
-<li>java.util.concurrent.ThreadPoolExecutor.AbortPolicy：丢弃任务并抛出异常</li>
-<li>java.util.concurrent.ThreadPoolExecutor.DiscardPolicy：丢弃任务，不抛出异常</li>
-<li>java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy：丢弃工作队列种最前面的任务，然后尝试重新执行次任务</li>
-<li>java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理此任务</li>
+<li>系统空闲时</li>
+<li>有新的更新，但是redo log已经满了</li>
+<li>内存不够用时</li>
 </ol>
-<h2 id="线程池处理流程"><a href="#线程池处理流程" class="headerlink" title="线程池处理流程"></a>线程池处理流程</h2><p>添加任务时：（1）如果当前线程数小于核心线程数，则创建新线程（构造一个worker对象）执行；（2）如果大于等于核心线程数，则添加到任务队列，（3）当任务队列满了以后，则创建新线程执行；（4）当线程数大于最大线程数时，则执行拒绝策略。当线程执行完当前的任务后，则会从队列中获取任务继续执行。如果队列中没有则阻塞，因此线程并不会死亡。除非线程池关闭或者是超过core的线程的空闲时间达到keepAliveTime。正常的应用应该是绝大多数的任务应执行步骤2，也就是将任务添加到队列。当超过核心数的线程空闲时间达到keepAliveTime时，则终止该线程</p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>使用线程池提交任务时，如果任务在执行过程中出现运行异常，会导致执行任务的线程终止；而且任务异常终止，我们却获取不到通知，会让人误以为线程正常执行，因此需要在任务里面捕获异常</p>
-
+<p>InnoDB 的 redo log 是固定大小的，比如可以配置为一组 4 个文件，每个文件的大小是 1GB，那么这块“粉板”总共就可以记录 4GB 的操作。从头开始写，写到末尾就又回到开头循环写，如下面这个图所示<br><img src="/images/pasted-17.png" alt="upload successful"><br>write pos 是当前记录的位置，一边写一边后移，写到第 3 号文件末尾后就回到 0 号文件开头。checkpoint 是当前要擦除的位置，也是往后推移并且循环的，擦除记录前要把记录更新到数据文件。</p>
+<p>有了 redo log，InnoDB 就可以保证即使数据库发生异常重启，之前提交的记录都不会丢失（内存没有了，但是可以根据redo log 进行重做），这个能力称为 crash-safe</p>
+<h2 id="bin-log"><a href="#bin-log" class="headerlink" title="bin log"></a>bin log</h2><h3 id="作用-1"><a href="#作用-1" class="headerlink" title="作用"></a>作用</h3><ol>
+<li>用于主从复制，从库利用主库上的binlog进行重播，实现主从同步</li>
+<li>用于数据库基于时间点的还原</li>
+</ol>
+<h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理"></a>原理</h3><p>事务提交的时候，一次性将事务中的sql语句（一个事物可能对应多个sql语句）按照一定的格式记录到binlog中。binlog是可以追加写的，追加写是指binlog文件写到一定大小后，会切换到下一个，并不会覆盖以前的日志</p>
+<p>数据还原：当需要数据恢复到指定的某一秒时，比如某天下午两点发现中午十二点有一次误删表，需要找回数据，那你可以这么做：</p>
+<ol>
+<li>首先，找到最近的一次全量备份，如果你运气好，可能就是昨天晚上的一个备份，把这个备份恢复到临时库</li>
+<li>从备份的时间点开始，将备份的 binlog 依次取出来，重放到中午误删表之前的那个时刻。</li>
+<li>这时临时库就跟误删之前的线上库一样了，然后你可以把表数据从临时库取出来，按需要恢复到线上库去</li>
+</ol>
+<h3 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h3><p>由于 redolog 和 binlog 是两个独立的逻辑，如果不用两阶段提交，要么就是先写完 redolog 再写 binlog，或者采用反过来的顺序，都会存在问题</p>
+<ol>
+<li>先写redolog，后写binlog：当写完redolog后，mysql崩溃重启后，会根据redolog进行数据恢复；然而没有写binlog，如果根据binlog恢复临时库的话，数据就会丢失了。造成了数据的不一致</li>
+<li>先写binlog，后写redolog：当写完binlog后，mysql崩溃重启后，由于redolog还没有写，数据就不会恢复，但是用binlog恢复临时库的话，数据就会多了。与原来的库不同，造成了数据的不一致</li>
+</ol>
+<p>两阶段提交的实现方式如下：</p>
+<ol>
+<li>redolog prepare阶段</li>
+<li>写binlog</li>
+<li>redolog commit阶段</li>
+</ol>
+<p>当系统在1阶段完成，2阶段之前奔溃，重启后恢复时：发现没有binlog，redolog也没有commit则回滚；备份恢复时：没有binlog，数据一致</p>
+<p>当系统在2阶段完成，3阶段之前奔溃，重启后恢复时：发现有binlog，redolog也prepare了则自动提交；备份恢复时：有binlog，数据一致</p>
+<h2 id="undo-log（回滚日志）"><a href="#undo-log（回滚日志）" class="headerlink" title="undo log（回滚日志）"></a>undo log（回滚日志）</h2>
       
     </div>
     
@@ -393,8 +390,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/01/11/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Java%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" rel="next" title="并发编程-Java线程的生命周期">
-                <i class="fa fa-chevron-left"></i> 并发编程-Java线程的生命周期
+              <a href="/2020/02/10/Mysql%E5%8E%9F%E7%90%86-%E7%B4%A2%E5%BC%95/" rel="next" title="Mysql原理-索引">
+                <i class="fa fa-chevron-left"></i> Mysql原理-索引
               </a>
             
           </div>
@@ -402,10 +399,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/01/16/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-CompletableFuture%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="prev" title="并发编程-CompletableFuture的使用">
-                并发编程-CompletableFuture的使用 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -528,7 +521,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么使用线程池"><span class="nav-number">1.</span> <span class="nav-text">为什么使用线程池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程池"><span class="nav-number">2.</span> <span class="nav-text">线程池</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数"><span class="nav-number">2.1.</span> <span class="nav-text">参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程池处理流程"><span class="nav-number">3.</span> <span class="nav-text">线程池处理流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意"><span class="nav-number">4.</span> <span class="nav-text">注意</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#redo-log（重做日志）"><span class="nav-number">1.</span> <span class="nav-text">redo log（重做日志）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">1.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">1.2.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bin-log"><span class="nav-number">2.</span> <span class="nav-text">bin log</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用-1"><span class="nav-number">2.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">2.2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两阶段提交"><span class="nav-number">2.3.</span> <span class="nav-text">两阶段提交</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undo-log（回滚日志）"><span class="nav-number">3.</span> <span class="nav-text">undo log（回滚日志）</span></a></li></ol></div>
             
 
           </div>
