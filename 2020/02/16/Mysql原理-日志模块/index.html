@@ -87,8 +87,9 @@
 <meta property="og:description" content="主要涉及三个模块 redo log（重做日志）作用保证事物的持久性，当发生故障，尚有脏页的数据未写入磁盘时，在mysql重启服务的时候根据redo log进行重做，从而达到事物的持久性 原理在mysql里面，如果每一次的更新操作都需要写进磁盘，然后磁盘也要找到对应的那条记录，然后再更新，整个过程 IO 成本、查找成本都很高。为了解决这个问题，MySQL 的设计者就用了类似酒店掌柜粉板的思路来提升更">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://yoursite.com/images/pasted-17.png">
+<meta property="og:image" content="http://yoursite.com/images/pasted-18.png">
 <meta property="article:published_time" content="2020-02-16T10:21:04.000Z">
-<meta property="article:modified_time" content="2020-02-20T03:52:42.415Z">
+<meta property="article:modified_time" content="2020-02-23T16:38:00.672Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/images/pasted-17.png">
@@ -366,7 +367,9 @@
 </ol>
 <p>当系统在1阶段完成，2阶段之前奔溃，重启后恢复时：发现没有binlog，redolog也没有commit则回滚；备份恢复时：没有binlog，数据一致</p>
 <p>当系统在2阶段完成，3阶段之前奔溃，重启后恢复时：发现有binlog，redolog也prepare了则自动提交；备份恢复时：有binlog，数据一致</p>
-<h2 id="undo-log（回滚日志）"><a href="#undo-log（回滚日志）" class="headerlink" title="undo log（回滚日志）"></a>undo log（回滚日志）</h2>
+<h2 id="undo-log（回滚日志）"><a href="#undo-log（回滚日志）" class="headerlink" title="undo log（回滚日志）"></a>undo log（回滚日志）</h2><h3 id="作用-2"><a href="#作用-2" class="headerlink" title="作用"></a>作用</h3><p>用于事物的回滚，同时可以提供多版本并发控制下的读（MVCC）</p>
+<h3 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h3><p>再Mysql中，每条记录再更新的时候都会同时记录一条回滚操作。记录上的最新值，都可以通过回滚操作得到前一个状态的值。可以简单的认为，当delete一条记录时，undo log会记录一条insert，反之亦然，当update一条记录时，它记录一条对应相反的update记录。另外undo log也会产生redo log，因为undo log 也需要持久性保护。如果假设一个值从 1 被按顺序改成了 2、3、4，在undo log里面就会有类似下面的记录<br><img src="/images/pasted-18.png" alt="upload successful"><br>可以看到同一条记录再系统中存在多个版本，这也就是数据库的多版本并发控制（MVCC）</p>
+
       
     </div>
     
@@ -521,7 +524,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#redo-log（重做日志）"><span class="nav-number">1.</span> <span class="nav-text">redo log（重做日志）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">1.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">1.2.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bin-log"><span class="nav-number">2.</span> <span class="nav-text">bin log</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用-1"><span class="nav-number">2.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">2.2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两阶段提交"><span class="nav-number">2.3.</span> <span class="nav-text">两阶段提交</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undo-log（回滚日志）"><span class="nav-number">3.</span> <span class="nav-text">undo log（回滚日志）</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#redo-log（重做日志）"><span class="nav-number">1.</span> <span class="nav-text">redo log（重做日志）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">1.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">1.2.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bin-log"><span class="nav-number">2.</span> <span class="nav-text">bin log</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用-1"><span class="nav-number">2.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">2.2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两阶段提交"><span class="nav-number">2.3.</span> <span class="nav-text">两阶段提交</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undo-log（回滚日志）"><span class="nav-number">3.</span> <span class="nav-text">undo log（回滚日志）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用-2"><span class="nav-number">3.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-2"><span class="nav-number">3.2.</span> <span class="nav-text">原理</span></a></li></ol></li></ol></div>
             
 
           </div>
