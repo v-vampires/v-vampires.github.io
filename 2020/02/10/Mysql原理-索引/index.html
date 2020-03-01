@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://yoursite.com/images/pasted-15.png">
 <meta property="og:image" content="http://yoursite.com/images/pasted-16.png">
 <meta property="article:published_time" content="2020-02-10T15:51:14.000Z">
-<meta property="article:modified_time" content="2020-02-16T10:20:52.708Z">
+<meta property="article:modified_time" content="2020-03-01T01:55:10.565Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/images/pasted-12.png">
@@ -362,6 +362,11 @@
 <p>可以看到，不只是索引的全部定义，只要满足最左前缀，就可以利用索引来加速检索。这个最左前缀可以是联合索引的最左 N 个字段，也可以是字符串索引的最左 M 个字符</p>
 <p>那么，如果既有联合查询，又有基于 a、b 各自的查询呢？查询条件里面只有 b 的语句，是无法使用 (a,b) 这个联合索引的，这时候你不得不维护另外一个索引，也就是说你需要同时维护 (a,b)、(b) 这两个索引。如果是abc联合索引，只有当a或者ab或者abc为条件时才能触发索引。ac也是会触发联合索引的，只是与只使用a是一致的</p>
 <p>最左前缀匹配原则，非常重要的原则，mysql会一直向右匹配直到遇到范围查询(&gt;、&lt;、between、like)就停止匹配，比如a = 1 and b = 2 and c &gt; 3 and d = 4 如果建立(a,b,c,d)顺序的索引，d是用不到索引的，如果建立(a,b,d,c)的索引则都可以用到，a,b,d的顺序可以任意调整。原理：联合索引的排序是先按照a排序，如果a相等再按照b排序。如果a是范围查找，那么b是无序的，所以在上面的例子中由于c列是范围查找，那么d列就是无序的，所以d列无法使用索引。还有一点需要注意：sql语句中的字段顺序不需要和联合索引中定义的顺序一致，查询优化器会自己调整顺序</p>
+<h2 id="普通索引于唯一索引"><a href="#普通索引于唯一索引" class="headerlink" title="普通索引于唯一索引"></a>普通索引于唯一索引</h2><p>如果某列是再业务上是唯一的，那么该加普通索引还是唯一索引呢？答案是普通索引</p>
+<ol>
+<li>在查询时没有区别：因为引擎读取数据都是按照页来读取数据的，普通索引会比唯一索引多一次“查找和判断下一条记录”的操作，但是这是在内存中完成的，性能差距微乎其微</li>
+<li>在更新时有性能区别：在更新时，如果数据在内存中就直接更新，而如果这个数据还不在内存中，再不影响数据一致性的前提下，innoDB会将这些更新操作缓存在change buffer中。这样就不需要从磁盘读入这个数据页了，在下次查询访问这个数据页时，将数据页读入内存，然后与change buffer进行merge。显然，如果能够将更新操作先记录在change buffer，减少读磁盘，语句的执行速度会得到提升。但是对于唯一索引来说，所有的更新操作，都要先判断这个操作是否违反唯一性约束，也就是需要先将数据读入到内存进行判断，增加了随机IO的访问。因此唯一索引不能使用change buffer 所以性能上不如普通索引</li>
+</ol>
 <h2 id="常见误区"><a href="#常见误区" class="headerlink" title="常见误区"></a>常见误区</h2><p>between,&gt;,&lt;,in是否使用索引并不是简单一刀切的，between,&gt;,&lt;跟范围有关，而in是和条件字符串的长度有关</p>
 
       
@@ -522,7 +527,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#索引本质"><span class="nav-number">1.</span> <span class="nav-text">索引本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引结构"><span class="nav-number">2.</span> <span class="nav-text">索引结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚簇索引和非聚簇索引"><span class="nav-number">3.</span> <span class="nav-text">聚簇索引和非聚簇索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#覆盖索引"><span class="nav-number">4.</span> <span class="nav-text">覆盖索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前缀索引"><span class="nav-number">5.</span> <span class="nav-text">前缀索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最左前缀原则"><span class="nav-number">6.</span> <span class="nav-text">最左前缀原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见误区"><span class="nav-number">7.</span> <span class="nav-text">常见误区</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#索引本质"><span class="nav-number">1.</span> <span class="nav-text">索引本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引结构"><span class="nav-number">2.</span> <span class="nav-text">索引结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚簇索引和非聚簇索引"><span class="nav-number">3.</span> <span class="nav-text">聚簇索引和非聚簇索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#覆盖索引"><span class="nav-number">4.</span> <span class="nav-text">覆盖索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前缀索引"><span class="nav-number">5.</span> <span class="nav-text">前缀索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最左前缀原则"><span class="nav-number">6.</span> <span class="nav-text">最左前缀原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#普通索引于唯一索引"><span class="nav-number">7.</span> <span class="nav-text">普通索引于唯一索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见误区"><span class="nav-number">8.</span> <span class="nav-text">常见误区</span></a></li></ol></div>
             
 
           </div>
