@@ -79,19 +79,15 @@
 
 
 
-<meta name="description" content="背景并发编程时，我们为了处理一个大任务，通常会将一个大任务分成几个子任务然后分别去处理。还有一种情况是，将一个大任务分解成多个相似的子任务,再将子任务分解成相似的子子任务，直到子任务可以直接计算。这种思想就是分治思想，常见的应用场景如归并排序、快速排序、计算框架MapReduce等。这种任务模型就是我们常说的分治任务模型。 分治任务模型分治任务模型分为两个阶段，一个阶段是任务分解，就是将大任务分解">
 <meta property="og:type" content="article">
-<meta property="og:title" content="并发编程-Fork&#x2F;Join框架">
-<meta property="og:url" content="http://yoursite.com/2020/02/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Fork-Join%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:title" content="Mysql原理-锁">
+<meta property="og:url" content="http://yoursite.com/2020/03/01/Mysql%E5%8E%9F%E7%90%86-%E9%94%81/index.html">
 <meta property="og:site_name" content="v-vampires">
-<meta property="og:description" content="背景并发编程时，我们为了处理一个大任务，通常会将一个大任务分成几个子任务然后分别去处理。还有一种情况是，将一个大任务分解成多个相似的子任务,再将子任务分解成相似的子子任务，直到子任务可以直接计算。这种思想就是分治思想，常见的应用场景如归并排序、快速排序、计算框架MapReduce等。这种任务模型就是我们常说的分治任务模型。 分治任务模型分治任务模型分为两个阶段，一个阶段是任务分解，就是将大任务分解">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://yoursite.com/images/pasted-11.png">
-<meta property="article:published_time" content="2020-02-04T09:19:07.000Z">
-<meta property="article:modified_time" content="2020-02-05T09:48:54.971Z">
+<meta property="article:published_time" content="2020-03-01T10:47:12.000Z">
+<meta property="article:modified_time" content="2020-03-01T10:47:12.534Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yoursite.com/images/pasted-11.png">
 
 
 
@@ -121,13 +117,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2020/02/04/并发编程-Fork-Join框架/"/>
+  <link rel="canonical" href="http://yoursite.com/2020/03/01/Mysql原理-锁/"/>
 
 
 
 
 
-  <title>并发编程-Fork/Join框架 | v-vampires</title>
+  <title>Mysql原理-锁 | v-vampires</title>
   
 
 
@@ -254,7 +250,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/04/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-Fork-Join%E6%A1%86%E6%9E%B6/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/01/Mysql%E5%8E%9F%E7%90%86-%E9%94%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="v-vampires">
@@ -271,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">并发编程-Fork/Join框架</h1>
+          <h1 class="post-title" itemprop="name headline">Mysql原理-锁</h1>
         
 
         <div class="post-meta">
@@ -283,8 +279,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-04T17:19:07+08:00">
-                2020-02-04
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-01T18:47:12+08:00">
+                2020-03-01
               </time>
             
 
@@ -331,20 +327,7 @@
       
 
       
-        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>并发编程时，我们为了处理一个大任务，通常会将一个大任务分成几个子任务然后分别去处理。还有一种情况是，将一个大任务分解成多个相似的子任务,再将子任务分解成相似的子子任务，直到子任务可以直接计算。这种思想就是分治思想，常见的应用场景如归并排序、快速排序、计算框架MapReduce等。这种任务模型就是我们常说的分治任务模型。</p>
-<h2 id="分治任务模型"><a href="#分治任务模型" class="headerlink" title="分治任务模型"></a>分治任务模型</h2><p>分治任务模型分为两个阶段，一个阶段是任务分解，就是将大任务分解成子任务，再讲子任务分解成子子任务，直到任务可以直接计算；另一个阶段是计算结果合并，逐层合并子任务的结果，直至获取到最终的结果，下图是一个简化的分治任务模型图</p>
-<p><img src="/images/pasted-11.png" alt="upload successful"></p>
-<h2 id="Fork-Join的使用"><a href="#Fork-Join的使用" class="headerlink" title="Fork/Join的使用"></a>Fork/Join的使用</h2><p>Fork/Join是一个并行的计算框架，用来支持分治任务模型。Fork对应任务模型的任务分解，Join对应的是计算结果合并。Fork/Join框架包含两部分，一部分是分治任务的线程池ForkJoinPool，一部分是分治任务ForkJoinTask，这两部分的关系类似于ThreadPoolExecutor于Runnable的关系，都可以理解为提交任务到线程池  </p>
-<p>ForkJoinTask是一个抽象类，核心的方法是fork()于join()方法，其中fork方法会异步执行一个子任务，而join方法则会阻塞当前线程来等待子任务的执行结果。ForkJoinTask有两个子类RecursiveAction 和 RecursiveTask，这两个子类都定义了抽象的compute()方法，区别是RecursiveAction的compute方法没有返回值，而RecursiveTask则有返回值。</p>
-<p>代码示例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    ForkJoinPool pool &#x3D; new ForkJoinPool(4);</span><br><span class="line">    &#x2F;&#x2F;创建任务</span><br><span class="line">    FibonacciTask task &#x3D; new FibonacciTask(10);</span><br><span class="line">    &#x2F;&#x2F;启动任务</span><br><span class="line">    Integer result &#x3D; pool.invoke(task);</span><br><span class="line">    System.out.println(result);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static class FibonacciTask extends RecursiveTask&lt;Integer&gt;&#123;</span><br><span class="line"></span><br><span class="line">    private final int n;</span><br><span class="line"></span><br><span class="line">    public FibonacciTask(int n) &#123;</span><br><span class="line">        this.n &#x3D; n;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected Integer compute() &#123;</span><br><span class="line">        if(n &lt;&#x3D;1) return n;</span><br><span class="line">        FibonacciTask f1 &#x3D; new FibonacciTask(n-1);</span><br><span class="line">        &#x2F;&#x2F;异步执行子任务f1</span><br><span class="line">        f1.fork();</span><br><span class="line">        FibonacciTask f2 &#x3D; new FibonacciTask(n-2);</span><br><span class="line">        &#x2F;&#x2F;f2再当前线程中执行</span><br><span class="line">        Integer r2 &#x3D; f2.compute();</span><br><span class="line">        Integer r1 &#x3D; f1.join();</span><br><span class="line">        return r2 + r1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>特别需要注意的点：  </p>
-<ol>
-<li>一定不能写成如下方式<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 分别对子任务调用fork():</span><br><span class="line">subtask1.fork();</span><br><span class="line">subtask2.fork();</span><br></pre></td></tr></table></figure>
-因为这样，两个子任务都是在子线程中执行，而当前线程会空闲，而子任务可能又fork两个子子线程，子线程也会变成空闲，这样就会浪费很多线程</li>
-<li>需要先f2.compute(),再f1.join()；如果反过来则会因为f1.join()导致线程阻塞，f1完成之后才执行f2导致并发度降低</li>
-</ol>
-
+        
       
     </div>
     
@@ -368,8 +351,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/01/16/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B-CompletableFuture%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="next" title="并发编程-CompletableFuture的使用">
-                <i class="fa fa-chevron-left"></i> 并发编程-CompletableFuture的使用
+              <a href="/2020/02/25/Mysql%E5%8E%9F%E7%90%86-%E4%BA%8B%E7%89%A9/" rel="next" title="Mysql原理-事物">
+                <i class="fa fa-chevron-left"></i> Mysql原理-事物
               </a>
             
           </div>
@@ -377,10 +360,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/02/10/Mysql%E5%8E%9F%E7%90%86-%E7%B4%A2%E5%BC%95/" rel="prev" title="Mysql原理-索引">
-                Mysql原理-索引 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -432,17 +411,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -493,22 +463,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分治任务模型"><span class="nav-number">2.</span> <span class="nav-text">分治任务模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fork-Join的使用"><span class="nav-number">3.</span> <span class="nav-text">Fork&#x2F;Join的使用</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
