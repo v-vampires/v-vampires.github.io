@@ -89,7 +89,7 @@
 <meta property="og:image" content="http://yoursite.com/images/pasted-17.png">
 <meta property="og:image" content="http://yoursite.com/images/pasted-18.png">
 <meta property="article:published_time" content="2020-02-16T10:21:04.000Z">
-<meta property="article:modified_time" content="2020-02-23T16:38:00.672Z">
+<meta property="article:modified_time" content="2020-04-19T10:26:34.634Z">
 <meta property="article:author" content="v-vampires">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/images/pasted-17.png">
@@ -354,6 +354,7 @@
 <li>从备份的时间点开始，将备份的 binlog 依次取出来，重放到中午误删表之前的那个时刻。</li>
 <li>这时临时库就跟误删之前的线上库一样了，然后你可以把表数据从临时库取出来，按需要恢复到线上库去</li>
 </ol>
+<h3 id="为什么说binlog具有crash-safe能力"><a href="#为什么说binlog具有crash-safe能力" class="headerlink" title="为什么说binlog具有crash-safe能力"></a>为什么说binlog具有crash-safe能力</h3><p>假如只有binlog，有可能是先提交数据再写binlog，如果提交数据之后，数据库崩溃了，当数据库重启后，数据库里面有数据，而binlog则没有数据，当进行主从复制或者基于时间点还原时，则会造成数据的不一致；同理如果先先binlog，再提交数据，如果写完binlog后，数据库奔溃了，当数据库恢复后，数据库里面则没有数据，当进行主从复制或者基于时间点还原时，还会造成数据的不一致</p>
 <h3 id="两阶段提交"><a href="#两阶段提交" class="headerlink" title="两阶段提交"></a>两阶段提交</h3><p>由于 redolog 和 binlog 是两个独立的逻辑，如果不用两阶段提交，要么就是先写完 redolog 再写 binlog，或者采用反过来的顺序，都会存在问题</p>
 <ol>
 <li>先写redolog，后写binlog：当写完redolog后，mysql崩溃重启后，会根据redolog进行数据恢复；然而没有写binlog，如果根据binlog恢复临时库的话，数据就会丢失了。造成了数据的不一致</li>
@@ -528,7 +529,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#redo-log（重做日志）"><span class="nav-number">1.</span> <span class="nav-text">redo log（重做日志）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">1.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">1.2.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bin-log"><span class="nav-number">2.</span> <span class="nav-text">bin log</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用-1"><span class="nav-number">2.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">2.2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两阶段提交"><span class="nav-number">2.3.</span> <span class="nav-text">两阶段提交</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undo-log（回滚日志）"><span class="nav-number">3.</span> <span class="nav-text">undo log（回滚日志）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用-2"><span class="nav-number">3.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-2"><span class="nav-number">3.2.</span> <span class="nav-text">原理</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#redo-log（重做日志）"><span class="nav-number">1.</span> <span class="nav-text">redo log（重做日志）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">1.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">1.2.</span> <span class="nav-text">原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bin-log"><span class="nav-number">2.</span> <span class="nav-text">bin log</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用-1"><span class="nav-number">2.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-1"><span class="nav-number">2.2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么说binlog具有crash-safe能力"><span class="nav-number">2.3.</span> <span class="nav-text">为什么说binlog具有crash-safe能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两阶段提交"><span class="nav-number">2.4.</span> <span class="nav-text">两阶段提交</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#undo-log（回滚日志）"><span class="nav-number">3.</span> <span class="nav-text">undo log（回滚日志）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用-2"><span class="nav-number">3.1.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理-2"><span class="nav-number">3.2.</span> <span class="nav-text">原理</span></a></li></ol></li></ol></div>
             
 
           </div>
