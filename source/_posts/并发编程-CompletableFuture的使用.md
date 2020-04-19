@@ -1,5 +1,7 @@
 title: 并发编程-CompletableFuture的使用
 author: v-vampires
+categories:
+  - 并发编程
 date: 2020-01-16 20:29:58
 tags:
 ---
@@ -66,7 +68,7 @@ public static void parallel() {
 }
 ```
 此示例是f1和f2是并行执行
-### 描述AND汇聚关系
+### AND汇聚关系
 ```
 CompletableFuture<V> thenCombine(other, fn)
 CompletableFuture<Void> thenAcceptBoth(other,consumer)
@@ -101,6 +103,9 @@ public static void test2() {
     System.out.println(f3.join());
 }
 ```
-
-
-
+### or汇聚关系
+```
+CompletableFuture<U> applyToEither(other, fn)
+CompletableFuture<Void> acceptEither(other, consumer)
+CompletableFuture<Void> runAfterEither(other, runnable) 
+```

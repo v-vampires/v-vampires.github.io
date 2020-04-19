@@ -2,6 +2,8 @@ title: 并发编程-Java线程的生命周期
 author: v-vampires
 date: 2020-01-11 22:23:32
 tags:
+categories: 
+- 并发编程
 ---
 ## 介绍
 在Java领域，实现并发程序的主要手段就是多线程。而Java语言里面的线程本质是就是操作系统的线程，他们是一一对应的

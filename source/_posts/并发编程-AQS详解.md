@@ -2,6 +2,8 @@ title: 并发编程-AQS详解
 author: v-vampires
 date: 2020-01-07 23:14:36
 tags:
+categories: 
+- 并发编程
 ---
 ## 介绍
 AQS是AbstractQueuedSynchronizer的简称，为那些依赖一个共享资源（volatile类型的原子变量state）的自定义同步器（ReentrantLock/Semaphore/CountDownLatch）提供了一个基础。自定义同步器在是实现时只需要实现共享资源的获取与释放，至于线程等待队列的维护（如获取资源失败入队/资源释放唤醒线程出队），AQS已经给实现好了。
